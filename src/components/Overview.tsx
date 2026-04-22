@@ -21,13 +21,14 @@ export default function Overview() {
   const month = data.months[viewedMonth];
 
   if (!month) {
-    return <p className="text-center text-gray-400 py-12">No data for this month.</p>;
+    return <p className="text-center text-muted py-12">No data for this month.</p>;
   }
 
   const totalSpent = month.transactions.reduce((sum, t) => sum + t.amount, 0);
   const remaining = month.income - totalSpent;
   const spentPct = month.income > 0 ? Math.min((totalSpent / month.income) * 100, 100) : 0;
   const overBudget = remaining < 0;
+
   return (
     <div className="flex flex-col gap-4">
       {/* Month navigation */}
@@ -35,7 +36,7 @@ export default function Overview() {
         <button
           onClick={() => idx > 0 && setViewedMonth(monthKeys[idx - 1])}
           disabled={idx <= 0}
-          className="p-2 rounded-full text-gray-400 disabled:opacity-30 active:bg-gray-100"
+          className="p-2 rounded-full text-muted disabled:opacity-30 active:bg-gray-100"
         >
           <MdChevronLeft className="w-6 h-6" />
         </button>
@@ -43,25 +44,25 @@ export default function Overview() {
         <button
           onClick={() => idx < monthKeys.length - 1 && setViewedMonth(monthKeys[idx + 1])}
           disabled={idx >= monthKeys.length - 1}
-          className="p-2 rounded-full text-gray-400 disabled:opacity-30 active:bg-gray-100"
+          className="p-2 rounded-full text-muted disabled:opacity-30 active:bg-gray-100"
         >
           <MdChevronRight className="w-6 h-6" />
         </button>
       </div>
 
       {/* Total remaining card */}
-      <div className="bg-white rounded-2xl p-5 shadow-sm">
-        <p className="text-sm text-gray-500 mb-1">Remaining</p>
-        <p className={`text-4xl font-bold mb-3 ${overBudget ? 'text-red-600' : 'text-gray-900'}`}>
+      <div className="bg-surface rounded-card p-5 shadow-sm">
+        <p className="text-sm text-muted mb-1">Remaining</p>
+        <p className={`text-4xl font-bold mb-3 ${overBudget ? 'text-danger' : 'text-gray-900'}`}>
           {fmt(remaining)} kr
         </p>
         <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
           <div
-            className={`h-2.5 rounded-full transition-all ${overBudget ? 'bg-red-500' : 'bg-blue-500'}`}
+            className={`h-2.5 rounded-full transition-all ${overBudget ? 'bg-danger' : 'bg-primary'}`}
             style={{ width: `${spentPct}%` }}
           />
         </div>
-        <p className="text-xs text-gray-400 mt-1.5">
+        <p className="text-xs text-muted mt-1.5">
           {fmt(totalSpent)} of {fmt(month.income)} kr spent
         </p>
       </div>
@@ -76,16 +77,16 @@ export default function Overview() {
             const pct = cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0;
             const over = spent > cat.budget;
             return (
-              <div key={cat.id} className="bg-white rounded-xl p-4 shadow-sm">
+              <div key={cat.id} className="bg-surface rounded-input p-4 shadow-sm">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-800">{cat.name}</span>
-                  <span className={`text-sm font-medium ${over ? 'text-red-600' : 'text-gray-500'}`}>
+                  <span className={`text-sm font-medium ${over ? 'text-danger' : 'text-muted'}`}>
                     {fmt(spent)} / {fmt(cat.budget)} kr
                   </span>
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                   <div
-                    className={`h-2 rounded-full transition-all ${over ? 'bg-red-500' : 'bg-blue-400'}`}
+                    className={`h-2 rounded-full transition-all ${over ? 'bg-danger' : 'bg-primary'}`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -94,7 +95,6 @@ export default function Overview() {
           })}
         </div>
       )}
-
     </div>
   );
 }

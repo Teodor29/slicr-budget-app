@@ -41,7 +41,7 @@ export default function AddTransactionModal({ onClose, editTransaction }: Props)
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md"
+        className="bg-surface rounded-t-2xl sm:rounded-card p-6 w-full sm:max-w-md"
         onClick={e => e.stopPropagation()}
       >
         <h2 className="text-xl font-bold mb-5">
@@ -57,10 +57,10 @@ export default function AddTransactionModal({ onClose, editTransaction }: Props)
               placeholder="0"
               value={amount}
               onChange={e => { setAmount(e.target.value); setError(''); }}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border rounded-input px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
               autoFocus
             />
-            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+            {error && <p className="text-danger text-xs mt-1">{error}</p>}
           </div>
 
           <div>
@@ -70,7 +70,7 @@ export default function AddTransactionModal({ onClose, editTransaction }: Props)
               placeholder="What was it for?"
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border rounded-input px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -79,7 +79,7 @@ export default function AddTransactionModal({ onClose, editTransaction }: Props)
             <select
               value={categoryId ?? ''}
               onChange={e => setCategoryId(e.target.value || null)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="w-full border border-border rounded-input px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary bg-surface"
             >
               <option value="">Other</option>
               {categories.map(cat => (
@@ -94,7 +94,7 @@ export default function AddTransactionModal({ onClose, editTransaction }: Props)
               type="date"
               value={date}
               onChange={e => setDate(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border rounded-input px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
         </div>
@@ -102,13 +102,13 @@ export default function AddTransactionModal({ onClose, editTransaction }: Props)
         <div className="flex gap-3 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium active:bg-gray-50"
+            className="flex-1 py-3 rounded-input border border-border text-gray-700 font-medium active:bg-gray-50"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 py-3 rounded-xl bg-blue-600 text-white font-semibold active:bg-blue-700"
+            className="flex-1 py-3 rounded-input bg-primary text-white font-semibold active:bg-primary-hover"
           >
             Save
           </button>
