@@ -1,9 +1,75 @@
+import { useState } from 'react';
+import { useBudget } from '../context/BudgetContext';
+import type { Transaction } from '../types';
+import AddTransactionModal from './AddTransactionModal';
+import { MdEdit, MdDelete } from 'react-icons/md';
+
 export default function Transactions() {
+  const { data, viewedMonth, deleteTransaction } = useBudget();
+  const month = data.months[viewedMonth];
+  const [editTx, setEditTx] = useState<Transaction | null>(null);
+
+  const isCurrentMonth = viewedMonth === data.currentMonth;
+
+  const transactions = [...(month?.transactions ?? [])].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  function getCategoryName(categoryId: string | null) {
+    if (!categoryId) return 'Other';
+    return month?.categories.find(c => c.id === categoryId)?.name ?? 'Other';
+  }
+
+  function formatDate(dateStr: string) {
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString('en', {
+      day: 'numeric',
+      month: 'short',
+    });
+  }
+
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900">Transactions</h2>
-      </div>
+    <div className="flex flex-col gap-4">
+      {transactions.length === 0 ? (
+        <p className="text-center text-gray-400 py-10">No transactions yet.</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {transactions.map(tx => (
+            <div key={tx.id} className="bg-white rounded-xl px-4 py-3.5 shadow-sm flex items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {tx.description || getCategoryName(tx.categoryId)}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {getCategoryName(tx.categoryId)} · {formatDate(tx.date)}
+                </p>
+              </div>
+              <span className="text-base font-semibold text-gray-900 shrink-0">
+                {tx.amount.toLocaleString('en')} kr
+              </span>
+              {isCurrentMonth && (
+                <div className="flex gap-0.5 shrink-0">
+                  <button
+                    onClick={() => setEditTx(tx)}
+                    className="p-2 text-gray-400 active:text-blue-600 rounded-lg"
+                  >
+                    <MdEdit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => deleteTransaction(tx.id)}
+                    className="p-2 text-gray-400 active:text-red-600 rounded-lg"
+                  >
+                    <MdDelete className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {editTx && (
+        <AddTransactionModal onClose={() => setEditTx(null)} editTransaction={editTx} />
+      )}
     </div>
   );
 }
