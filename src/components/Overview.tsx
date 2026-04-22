@@ -40,7 +40,7 @@ export default function Overview() {
         >
           <MdChevronLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-lg font-semibold text-gray-900">{formatMonthLabel(viewedMonth)}</h1>
+        <h1 className="text-lg md:text-3xl font-semibold text-gray-900">{formatMonthLabel(viewedMonth)}</h1>
         <button
           onClick={() => idx < monthKeys.length - 1 && setViewedMonth(monthKeys[idx + 1])}
           disabled={idx >= monthKeys.length - 1}

@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useBudget } from '../context/BudgetContext';
 import type { Transaction } from '../types';
 import AddTransactionModal from './AddTransactionModal';
-import { MdEdit, MdDelete } from 'react-icons/md';
+import { MdEdit, MdDelete, MdAdd } from 'react-icons/md';
 
 export default function Transactions() {
   const { data, viewedMonth, deleteTransaction } = useBudget();
   const month = data.months[viewedMonth];
   const [editTx, setEditTx] = useState<Transaction | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
 
   const isCurrentMonth = viewedMonth === data.currentMonth;
 
@@ -22,13 +23,25 @@ export default function Transactions() {
 
   function formatDate(dateStr: string) {
     return new Date(dateStr + 'T00:00:00').toLocaleDateString('en', {
-      day: 'numeric',
-      month: 'short',
+      day: 'numeric', month: 'short',
     });
   }
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <h2 className="hidden md:block text-2xl font-semibold text-gray-900">Transactions</h2>
+        {isCurrentMonth && (
+          <button
+            onClick={() => setShowAdd(true)}
+            className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-input bg-primary text-white text-sm font-semibold active:bg-primary-hover"
+          >
+            <MdAdd className="w-4 h-4" />
+            Add
+          </button>
+        )}
+      </div>
+
       {transactions.length === 0 ? (
         <p className="text-center text-muted py-10">No transactions yet.</p>
       ) : (
@@ -48,16 +61,10 @@ export default function Transactions() {
               </span>
               {isCurrentMonth && (
                 <div className="flex gap-0.5 shrink-0">
-                  <button
-                    onClick={() => setEditTx(tx)}
-                    className="p-2 text-muted active:text-primary rounded-lg"
-                  >
+                  <button onClick={() => setEditTx(tx)} className="p-2 text-muted active:text-primary rounded-lg">
                     <MdEdit className="w-4 h-4" />
                   </button>
-                  <button
-                    onClick={() => deleteTransaction(tx.id)}
-                    className="p-2 text-muted active:text-danger rounded-lg"
-                  >
+                  <button onClick={() => deleteTransaction(tx.id)} className="p-2 text-muted active:text-danger rounded-lg">
                     <MdDelete className="w-4 h-4" />
                   </button>
                 </div>
@@ -67,9 +74,8 @@ export default function Transactions() {
         </div>
       )}
 
-      {editTx && (
-        <AddTransactionModal onClose={() => setEditTx(null)} editTransaction={editTx} />
-      )}
+      {showAdd  && <AddTransactionModal onClose={() => setShowAdd(false)} />}
+      {editTx   && <AddTransactionModal onClose={() => setEditTx(null)} editTransaction={editTx} />}
     </div>
   );
 }
