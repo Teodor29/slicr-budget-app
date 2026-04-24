@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-primary:       #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #eff6ff;
+  --color-danger:        #ef4444;
+  --color-danger-light:  #fef2f2;
+
+  --color-surface:       #ffffff;
+  --color-page:          #f9fafb;
+  --color-border:        #e5e7eb;
+  --color-muted:         #9ca3af;
+  --color-fg:            #111827;
+  --color-fg-secondary:  #1f2937;
+  --color-fg-subtle:     #374151;
+  --color-hover:         #f3f4f6;
+  --color-track:         #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface:       #18181b;
+    --color-page:          #09090b;
+    --color-border:        #3f3f46;
+    --color-muted:         #71717a;
+    --color-fg:            #ffffff;
+    --color-fg-secondary:  #f4f4f5;
+    --color-fg-subtle:     #d4d4d8;
+    --color-hover:         #27272a;
+    --color-track:         #3f3f46;
+    --color-primary:       #719bf4;
+    --color-primary-hover: #5a86d4;
+    --color-danger:        #f39398;
+    --color-danger-light:  #fee2e2;
+  }
+}

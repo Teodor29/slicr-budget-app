@@ -36,15 +36,15 @@ export default function Overview() {
         <button
           onClick={() => idx > 0 && setViewedMonth(monthKeys[idx - 1])}
           disabled={idx <= 0}
-          className="p-2 rounded-full text-muted disabled:opacity-30 active:bg-gray-100"
+          className="p-2 rounded-full text-muted disabled:opacity-30 active:bg-hover"
         >
           <MdChevronLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-lg md:text-3xl font-semibold text-gray-900">{formatMonthLabel(viewedMonth)}</h1>
+        <h1 className="text-lg md:text-3xl font-semibold text-fg">{formatMonthLabel(viewedMonth)}</h1>
         <button
           onClick={() => idx < monthKeys.length - 1 && setViewedMonth(monthKeys[idx + 1])}
           disabled={idx >= monthKeys.length - 1}
-          className="p-2 rounded-full text-muted disabled:opacity-30 active:bg-gray-100"
+          className="p-2 rounded-full text-muted disabled:opacity-30 active:bg-hover"
         >
           <MdChevronRight className="w-6 h-6" />
         </button>
@@ -53,10 +53,10 @@ export default function Overview() {
       {/* Total remaining card */}
       <div className="bg-surface rounded-card p-5 shadow-sm">
         <p className="text-sm text-muted mb-1">Remaining</p>
-        <p className={`text-4xl font-bold mb-3 ${overBudget ? 'text-danger' : 'text-gray-900'}`}>
+        <p className={`text-4xl font-bold mb-3 ${overBudget ? 'text-danger' : 'text-fg'}`}>
           {fmt(remaining)} kr
         </p>
-        <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+        <div className="w-full bg-track rounded-full h-2.5 overflow-hidden">
           <div
             className={`h-2.5 rounded-full transition-all ${overBudget ? 'bg-danger' : 'bg-primary'}`}
             style={{ width: `${spentPct}%` }}
@@ -79,12 +79,12 @@ export default function Overview() {
             return (
               <div key={cat.id} className="bg-surface rounded-input p-4 shadow-sm">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-800">{cat.name}</span>
+                  <span className="text-sm font-medium text-fg-secondary">{cat.name}</span>
                   <span className={`text-sm font-medium ${over ? 'text-danger' : 'text-muted'}`}>
                     {fmt(spent)} / {fmt(cat.budget)} kr
                   </span>
                 </div>
-                <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-track rounded-full h-2 overflow-hidden">
                   <div
                     className={`h-2 rounded-full transition-all ${over ? 'bg-danger' : 'bg-primary'}`}
                     style={{ width: `${pct}%` }}

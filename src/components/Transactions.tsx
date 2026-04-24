@@ -30,7 +30,7 @@ export default function Transactions() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="hidden md:block text-2xl font-semibold text-gray-900">Transactions</h2>
+        <h2 className="hidden md:block text-2xl font-semibold text-fg">Transactions</h2>
         {isCurrentMonth && (
           <button
             onClick={() => setShowAdd(true)}
@@ -49,14 +49,14 @@ export default function Transactions() {
           {transactions.map(tx => (
             <div key={tx.id} className="bg-surface rounded-input px-4 py-3.5 shadow-sm flex items-center gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-800 truncate">
+                <p className="text-sm font-medium text-fg-secondary truncate">
                   {tx.description || getCategoryName(tx.categoryId)}
                 </p>
                 <p className="text-xs text-muted mt-0.5">
                   {getCategoryName(tx.categoryId)} · {formatDate(tx.date)}
                 </p>
               </div>
-              <span className="text-base font-semibold text-gray-900 shrink-0">
+              <span className="text-base font-semibold text-fg shrink-0">
                 {tx.amount.toLocaleString('en')} kr
               </span>
               {isCurrentMonth && (

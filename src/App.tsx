@@ -28,14 +28,14 @@ function NewMonthPrompt() {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-30 px-4">
       <div className="bg-surface rounded-card p-6 w-full max-w-sm shadow-xl">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">New month</h2>
+        <h2 className="text-xl font-bold text-fg mb-2">New month</h2>
         <p className="text-muted mb-6">
           Start {label}? Your template will be copied to the new month.
         </p>
         <div className="flex gap-3">
           <button
             onClick={dismissNewMonth}
-            className="flex-1 py-2.5 rounded-input border border-border text-gray-700 font-medium active:bg-gray-50"
+            className="flex-1 py-2.5 rounded-input border border-border text-fg-subtle font-medium active:bg-hover"
           >
             Not now
           </button>
