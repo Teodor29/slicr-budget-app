@@ -29,13 +29,13 @@ function NewMonthPrompt() {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-30 px-4">
       <div className="bg-surface rounded-card p-6 w-full max-w-sm shadow-xl">
         <h2 className="text-xl font-bold text-fg mb-2">New month</h2>
-        <p className="text-muted mb-6">
+        <p className="text-fg-muted mb-6">
           Start {label}? Your template will be copied to the new month.
         </p>
         <div className="flex gap-3">
           <button
             onClick={dismissNewMonth}
-            className="flex-1 py-2.5 rounded-input border border-border text-fg-subtle font-medium active:bg-hover"
+            className="flex-1 py-2.5 rounded-input border border-border text-fg-muted font-medium active:bg-subtle"
           >
             Not now
           </button>
@@ -87,7 +87,7 @@ function AppInner() {
             <button
               key={id}
               onClick={() => setView(id as View)}
-              className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium ${view === id ? "text-primary" : "text-muted"}`}
+              className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium ${view === id ? "text-primary" : "text-fg-muted"}`}
             >
               <Icon className="w-6 h-6" />
               {label}

@@ -34,10 +34,9 @@ export default function Plan() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Income */}
       <div className="bg-surface rounded-card p-5 shadow-sm">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-base font-semibold text-fg-secondary">Monthly income</h3>
+          <h3 className="text-base font-semibold text-fg">Monthly income</h3>
           {!incomeEditing && (
             <button onClick={startEditIncome} className="text-primary active:opacity-70">
               <MdEdit className="w-5 h-5" />
@@ -58,7 +57,7 @@ export default function Plan() {
             <button onClick={saveIncome} className="p-2.5 bg-primary text-white rounded-input active:bg-primary-hover">
               <MdCheck className="w-5 h-5" />
             </button>
-            <button onClick={() => setIncomeEditing(false)} className="p-2.5 border border-border rounded-input text-muted active:bg-hover">
+            <button onClick={() => setIncomeEditing(false)} className="p-2.5 border border-border rounded-input text-fg-muted active:bg-subtle">
               <MdClose className="w-5 h-5" />
             </button>
           </div>
@@ -69,12 +68,11 @@ export default function Plan() {
         )}
       </div>
 
-      {/* Categories */}
       <div className="bg-surface rounded-card p-5 shadow-sm">
-        <h3 className="text-base font-semibold text-fg-secondary mb-3">Categories</h3>
+        <h3 className="text-base font-semibold text-fg mb-3">Categories</h3>
 
         {template.categories.length === 0 && (
-          <p className="text-sm text-muted mb-4">No categories yet.</p>
+          <p className="text-sm text-fg-muted mb-4">No categories yet.</p>
         )}
 
         <div className="flex flex-col divide-y divide-border">
@@ -99,21 +97,21 @@ export default function Plan() {
                   <button onClick={saveEditCat} className="p-2 bg-primary text-white rounded-input">
                     <MdCheck className="w-4 h-4" />
                   </button>
-                  <button onClick={() => setEditingCat(null)} className="p-2 border border-border rounded-input text-muted">
+                  <button onClick={() => setEditingCat(null)} className="p-2 border border-border rounded-input text-fg-muted">
                     <MdClose className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-fg-secondary">{cat.name}</p>
-                    <p className="text-xs text-muted">{cat.budget.toLocaleString('en')} kr / month</p>
+                    <p className="text-sm font-medium text-fg">{cat.name}</p>
+                    <p className="text-xs text-fg-muted">{cat.budget.toLocaleString('en')} kr / month</p>
                   </div>
                   <div className="flex gap-1">
-                    <button onClick={() => setEditingCat(cat)} className="p-2 text-muted active:text-primary">
+                    <button onClick={() => setEditingCat(cat)} className="p-2 text-fg-muted active:text-primary">
                       <MdEdit className="w-4 h-4" />
                     </button>
-                    <button onClick={() => deleteCategory(cat.id)} className="p-2 text-muted active:text-danger">
+                    <button onClick={() => deleteCategory(cat.id)} className="p-2 text-fg-muted active:text-danger">
                       <MdDelete className="w-4 h-4" />
                     </button>
                   </div>
@@ -125,7 +123,7 @@ export default function Plan() {
 
         <button
           onClick={() => setShowAddCategory(true)}
-          className="w-full mt-3 py-3 rounded-input border-2 border-dashed border-border text-sm font-medium text-muted active:bg-hover"
+          className="w-full mt-3 py-3 rounded-input border-2 border-dashed border-border text-sm font-medium text-fg-muted active:bg-subtle"
         >
           + Add category
         </button>

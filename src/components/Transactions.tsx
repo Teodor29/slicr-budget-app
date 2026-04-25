@@ -43,16 +43,16 @@ export default function Transactions() {
       </div>
 
       {transactions.length === 0 ? (
-        <p className="text-center text-muted py-10">No transactions yet.</p>
+        <p className="text-center text-fg-muted py-10">No transactions yet.</p>
       ) : (
         <div className="flex flex-col gap-2">
           {transactions.map(tx => (
             <div key={tx.id} className="bg-surface rounded-input px-4 py-3.5 shadow-sm flex items-center gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-fg-secondary truncate">
+                <p className="text-sm font-medium text-fg truncate">
                   {tx.description || getCategoryName(tx.categoryId)}
                 </p>
-                <p className="text-xs text-muted mt-0.5">
+                <p className="text-xs text-fg-muted mt-0.5">
                   {getCategoryName(tx.categoryId)} · {formatDate(tx.date)}
                 </p>
               </div>
@@ -61,10 +61,10 @@ export default function Transactions() {
               </span>
               {isCurrentMonth && (
                 <div className="flex gap-0.5 shrink-0">
-                  <button onClick={() => setEditTx(tx)} className="p-2 text-muted active:text-primary rounded-lg">
+                  <button onClick={() => setEditTx(tx)} className="p-2 text-fg-muted active:text-primary rounded-lg">
                     <MdEdit className="w-4 h-4" />
                   </button>
-                  <button onClick={() => deleteTransaction(tx.id)} className="p-2 text-muted active:text-danger rounded-lg">
+                  <button onClick={() => deleteTransaction(tx.id)} className="p-2 text-fg-muted active:text-danger rounded-lg">
                     <MdDelete className="w-4 h-4" />
                   </button>
                 </div>

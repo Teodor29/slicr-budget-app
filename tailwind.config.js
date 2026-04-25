@@ -5,27 +5,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: 'var(--color-primary)',
-          hover:   'var(--color-primary-hover)',
-          light:   'var(--color-primary-light)',
-          text:    'var(--color-primary)',
-        },
-        danger: {
-          DEFAULT: 'var(--color-danger)',
-          light:   'var(--color-danger-light)',
-        },
-        surface: 'var(--color-surface)',
-        page:    'var(--color-page)',
-        border:  'var(--color-border)',
-        muted:   'var(--color-muted)',
+        page:    'var(--page)',
+        surface: 'var(--surface)',
+        subtle:  'var(--subtle)',
+        border:  'var(--border)',
         fg: {
-          DEFAULT:   'var(--color-fg)',
-          secondary: 'var(--color-fg-secondary)',
-          subtle:    'var(--color-fg-subtle)',
+          DEFAULT: 'var(--text)',
+          muted:   'var(--text-muted)',
         },
-        hover:   'var(--color-hover)',
-        track:   'var(--color-track)',
+        primary: {
+          DEFAULT: 'var(--primary)',
+          hover:   'var(--primary-hover)',
+        },
+        danger:  'var(--danger)',
       },
       borderRadius: {
         card:  '1rem',

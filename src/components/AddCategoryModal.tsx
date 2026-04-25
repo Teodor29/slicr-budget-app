@@ -20,7 +20,7 @@ export default function AddCategoryModal({ onClose }: Props) {
   }
 
   const inputClass = "w-full bg-surface text-fg border border-border rounded-input px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary";
-  const labelClass = "text-sm font-medium text-fg-subtle block mb-1.5";
+  const labelClass = "text-sm font-medium text-fg-muted block mb-1.5";
 
   return (
     <div
@@ -65,7 +65,7 @@ export default function AddCategoryModal({ onClose }: Props) {
         <div className="flex gap-3 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-input border border-border text-fg-subtle font-medium active:bg-hover"
+            className="flex-1 py-3 rounded-input border border-border text-fg-muted font-medium active:bg-subtle"
           >
             Cancel
           </button>
