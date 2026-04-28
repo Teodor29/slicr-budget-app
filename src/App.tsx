@@ -57,7 +57,7 @@ function AppInner() {
   const showFab = view === "overview" || view === "transactions";
 
   return (
-    <div className="min-h-screen bg-page">
+    <div className="min-h-[100dvh] bg-page">
       {/* Desktop: one page, sections stacked */}
       <div className="hidden md:grid md:grid-cols-[2fr_1fr] gap-6 px-8 py-10 max-w-6xl mx-auto">
         <Overview />
@@ -66,8 +66,11 @@ function AppInner() {
       </div>
 
       {/* Mobile: one panel at a time */}
-      <div className="md:hidden flex flex-col min-h-screen">
-        <main className="flex-1 px-4 py-6 pb-24">
+      <div className="md:hidden flex flex-col min-h-[100dvh]">
+        <main
+          className="flex-1 px-4 py-6"
+          style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}
+        >
           {view === "overview"     && <Overview />}
           {view === "transactions" && <Transactions />}
           {view === "plan"         && <Plan />}
@@ -82,7 +85,10 @@ function AppInner() {
           </button>
         )}
 
-        <nav className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border flex">
+        <nav
+          className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border flex"
+          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        >
           {NAV_ITEMS.map(({ id, label, Icon }) => (
             <button
               key={id}

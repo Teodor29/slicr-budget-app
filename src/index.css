@@ -14,6 +14,21 @@
   --danger: oklch(55% 0.22 27);
 }
 
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--page);
+}
+
+body {
+  padding-top: env(safe-area-inset-top);
+}
+
+#root {
+  min-height: 100%;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --page: oklch(15% 0 0);

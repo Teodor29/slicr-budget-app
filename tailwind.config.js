@@ -1,29 +1,32 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  darkMode: 'media',
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: "media",
   theme: {
     extend: {
       colors: {
-        page:    'var(--page)',
-        surface: 'var(--surface)',
-        subtle:  'var(--subtle)',
-        border:  'var(--border)',
+        page: "var(--page)",
+        surface: "var(--surface)",
+        subtle: "var(--subtle)",
+        border: "var(--border)",
         fg: {
-          DEFAULT: 'var(--text)',
-          muted:   'var(--text-muted)',
+          DEFAULT: "var(--text)",
+          muted: "var(--text-muted)",
         },
         primary: {
-          DEFAULT: 'var(--primary)',
-          hover:   'var(--primary-hover)',
+          DEFAULT: "var(--primary)",
+          hover: "var(--primary-hover)",
         },
-        danger:  'var(--danger)',
+        danger: "var(--danger)",
       },
       borderRadius: {
-        card:  '1rem',
-        input: '0.75rem',
+        card: "1rem",
+        input: "0.75rem",
+      },
+      padding: {
+        safe: "env(safe-area-inset-top)",
       },
     },
   },
   plugins: [],
-}
+};
