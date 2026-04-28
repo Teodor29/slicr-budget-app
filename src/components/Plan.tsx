@@ -1,71 +1,43 @@
-import { useState } from 'react';
-import { useBudget } from '../context/BudgetContext';
-import type { Category } from '../types';
-import { MdEdit, MdDelete, MdCheck, MdClose } from 'react-icons/md';
-import AddCategoryModal from './AddCategoryModal';
+import { useState } from "react";
+import { useBudget } from "../context/BudgetContext";
+import type { Category } from "../types";
+import AddCategoryModal from "./AddCategoryModal";
+import EditCategoryModal from "./EditCategoryModal";
+import EditIncomeModal from "./EditIncomeModal";
+import { MdEdit } from "react-icons/md";
 
 export default function Plan() {
   const { data, setIncome, updateCategory, deleteCategory } = useBudget();
-  const { template } = data;
+  const template = data?.template ?? { income: 0, categories: [] };
 
   const [incomeEditing, setIncomeEditing] = useState(false);
-  const [incomeInput, setIncomeInput] = useState('');
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [editingCat, setEditingCat] = useState<Category | null>(null);
+  const [focusField, setFocusField] = useState<"name" | "budget" | null>(null);
 
-  function startEditIncome() {
-    setIncomeInput(String(template.income));
-    setIncomeEditing(true);
+  function handleSaveCategory(cat: Category) {
+    updateCategory(cat);
   }
 
-  function saveIncome() {
-    const val = parseFloat(incomeInput);
-    if (!isNaN(val) && val >= 0) setIncome(val);
-    setIncomeEditing(false);
+  function handleSaveIncome(amount: number) {
+    setIncome(amount);
   }
-
-  function saveEditCat() {
-    if (!editingCat) return;
-    updateCategory(editingCat);
-    setEditingCat(null);
-  }
-
-  const inputClass = "bg-surface text-fg border border-border rounded-input focus:outline-none focus:ring-2 focus:ring-primary";
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="bg-surface rounded-card p-5 shadow-sm">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="text-base font-semibold text-fg">Monthly income</h3>
-          {!incomeEditing && (
-            <button onClick={startEditIncome} className="text-primary active:opacity-70">
-              <MdEdit className="w-5 h-5" />
-            </button>
-          )}
-        </div>
-
-        {incomeEditing ? (
-          <div className="flex gap-2 mt-2">
-            <input
-              type="number"
-              value={incomeInput}
-              onChange={e => setIncomeInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') saveIncome(); if (e.key === 'Escape') setIncomeEditing(false); }}
-              className={`flex-1 px-4 py-2.5 text-base ${inputClass}`}
-              autoFocus
-            />
-            <button onClick={saveIncome} className="p-2.5 bg-primary text-white rounded-input active:bg-primary-hover">
-              <MdCheck className="w-5 h-5" />
-            </button>
-            <button onClick={() => setIncomeEditing(false)} className="p-2.5 border border-border rounded-input text-fg-muted active:bg-subtle">
-              <MdClose className="w-5 h-5" />
-            </button>
-          </div>
-        ) : (
-          <p className="text-2xl font-bold text-fg mt-1">
-            {template.income.toLocaleString('en')} kr
+      <div
+        className="flex bg-surface rounded-card p-5 shadow-sm"
+        onClick={() => setIncomeEditing(true)}
+      >
+        <div className="flex-1">
+          <h3 className="text-base font-semibold text-fg mb-2">
+            Monthly income
+          </h3>
+          <p className="text-2xl font-bold text-fg">
+            {(template.income ?? 0).toLocaleString("en")} kr
           </p>
-        )}
+        </div>
+        <MdEdit className=" w-4 h-4 text-fg-muted mt-1" />
       </div>
 
       <div className="bg-surface rounded-card p-5 shadow-sm">
@@ -76,47 +48,31 @@ export default function Plan() {
         )}
 
         <div className="flex flex-col divide-y divide-border">
-          {template.categories.map(cat => (
-            <div key={cat.id} className="py-2 first:pt-0 last:pb-0">
-              {editingCat?.id === cat.id ? (
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={editingCat.name}
-                    onChange={e => setEditingCat({ ...editingCat, name: e.target.value })}
-                    onKeyDown={e => { if (e.key === 'Enter') saveEditCat(); if (e.key === 'Escape') setEditingCat(null); }}
-                    className={`flex-1 px-3 py-2 text-sm ${inputClass}`}
-                    autoFocus
-                  />
-                  <input
-                    type="number"
-                    value={editingCat.budget}
-                    onChange={e => setEditingCat({ ...editingCat, budget: Number(e.target.value) })}
-                    className={`w-28 px-3 py-2 text-sm ${inputClass}`}
-                  />
-                  <button onClick={saveEditCat} className="p-2 bg-primary text-white rounded-input">
-                    <MdCheck className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => setEditingCat(null)} className="p-2 border border-border rounded-input text-fg-muted">
-                    <MdClose className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-fg">{cat.name}</p>
-                    <p className="text-xs text-fg-muted">{cat.budget.toLocaleString('en')} kr / month</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <button onClick={() => setEditingCat(cat)} className="p-2 text-fg-muted active:text-primary">
-                      <MdEdit className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => deleteCategory(cat.id)} className="p-2 text-fg-muted active:text-danger">
-                      <MdDelete className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
+          {template.categories.map((cat) => (
+            <div
+              key={cat.id}
+              className="flex items-center py-3 first:pt-0 last:pb-0 cursor-pointer"
+              onClick={() => {
+                setEditingCat(cat);
+                setFocusField("name");
+              }}
+            >
+              <p className="text-sm font-medium text-fg">{cat.name}</p>
+              <div className="flex-1" />
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditingCat(cat);
+                  setFocusField("budget");
+                }}
+                className="px-3 py-2 rounded-lg bg-subtle"
+              >
+                <span className="text-sm font-medium text-fg">
+                  {cat.budget.toLocaleString("en")} kr
+                </span>
+              </button>
+              <MdEdit className="w-4 h-4 text-fg-muted ml-2" />
             </div>
           ))}
         </div>
@@ -129,7 +85,29 @@ export default function Plan() {
         </button>
       </div>
 
-      {showAddCategory && <AddCategoryModal onClose={() => setShowAddCategory(false)} />}
+      {showAddCategory && (
+        <AddCategoryModal onClose={() => setShowAddCategory(false)} />
+      )}
+      {editingCat && (
+        <EditCategoryModal
+          category={editingCat}
+          onClose={() => {
+            setEditingCat(null);
+            setFocusField(null);
+          }}
+          onSave={handleSaveCategory}
+          onDelete={deleteCategory}
+          canDelete={editingCat.id !== "other"}
+          focusField={focusField}
+        />
+      )}
+      {incomeEditing && (
+        <EditIncomeModal
+          income={template.income}
+          onClose={() => setIncomeEditing(false)}
+          onSave={handleSaveIncome}
+        />
+      )}
     </div>
   );
 }

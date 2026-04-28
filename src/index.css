@@ -24,6 +24,6 @@
     --text-muted: oklch(70% 0.012 265);
     --primary: oklch(62% 0.22 264);
     --primary-hover: oklch(57% 0.22 264);
-    --danger: oklch(73% 0.14 20);
+    --danger: oklch(0.7 0.16 27);
   }
 }

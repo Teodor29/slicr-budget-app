@@ -1,12 +1,23 @@
-import type { AppData } from '../types';
+import type { AppData } from "../types";
 
-const STORAGE_KEY = 'budget_app';
+const STORAGE_KEY = "budget_app";
 
 export function loadData(): AppData | null {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as AppData;
+    const data = JSON.parse(raw) as AppData;
+    // Ensure all months have income property (migration for old data)
+    for (const monthKey in data.months) {
+      if (data.months[monthKey].income === undefined) {
+        data.months[monthKey].income = data.template?.income ?? 0;
+      }
+    }
+    // Ensure template has income
+    if (data.template?.income === undefined) {
+      data.template.income = 0;
+    }
+    return data;
   } catch {
     return null;
   }
@@ -18,15 +29,22 @@ export function saveData(data: AppData): void {
 
 export function getCurrentMonthKey(): string {
   const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
 export function createInitialData(): AppData {
   const currentMonth = getCurrentMonthKey();
   return {
-    template: { income: 0, categories: [] },
+    template: {
+      income: 0,
+      categories: [{ id: "other", name: "Other", budget: 0 }],
+    },
     months: {
-      [currentMonth]: { income: 0, categories: [], transactions: [] },
+      [currentMonth]: {
+        income: 0,
+        categories: [{ id: "other", name: "Other", budget: 0 }],
+        transactions: [],
+      },
     },
     currentMonth,
   };
