@@ -80,36 +80,38 @@ export default function Transactions() {
               <h3 className="text-sm font-semibold text-fg-muted px-4 mb-2">
                 {formatFullDate(date)}
               </h3>
-              <div className="flex flex-col gap-3">
-                {transactionsByDate[date].map((tx) => (
-                  <div
-                    key={tx.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditField(tx, "amount");
-                    }}
-                    className="bg-surface rounded-card p-4 shadow-sm cursor-pointer"
-                  >
-                    <div className="flex items-center cursor-pointer">
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-fg">
-                          {getCategoryName(tx.categoryId)}
-                        </p>
-                        <p className="text-xs text-fg-muted mt-0.5">
-                          {tx.description}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-fg">
-                          {tx.amount.toLocaleString("en")} kr
-                        </span>
-                        {isCurrentMonth && (
-                          <MdEdit className="w-4 h-4 text-fg-muted" />
-                        )}
+              <div className="bg-surface px-5 py-2 rounded-card shadow-sm">
+                <div className="flex flex-col divide-y divide-border">
+                  {transactionsByDate[date].map((tx) => (
+                    <div
+                      key={tx.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditField(tx, "amount");
+                      }}
+                      className="py-3  cursor-pointer"
+                    >
+                      <div className="flex items-center cursor-pointer">
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-fg">
+                            {getCategoryName(tx.categoryId)}
+                          </p>
+                          <p className="text-xs text-fg-muted mt-0.5">
+                            {tx.description}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-fg">
+                            {tx.amount.toLocaleString("en")} kr
+                          </span>
+                          {isCurrentMonth && (
+                            <MdEdit className="w-4 h-4 text-fg-muted" />
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           ))}

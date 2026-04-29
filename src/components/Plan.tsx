@@ -6,6 +6,10 @@ import EditCategoryModal from "./EditCategoryModal";
 import EditIncomeModal from "./EditIncomeModal";
 import { MdEdit } from "react-icons/md";
 
+function fmt(n: number) {
+  return n.toLocaleString("en", { maximumFractionDigits: 0 });
+}
+
 export default function Plan() {
   const { data, setIncome, updateCategory, deleteCategory } = useBudget();
   const template = data?.template ?? { income: 0, categories: [] };
@@ -23,8 +27,36 @@ export default function Plan() {
     setIncome(amount);
   }
 
+  const totalBudgeted = template.categories.reduce(
+    (sum, cat) => sum + cat.budget,
+    0,
+  );
+  const remainingToBudget = template.income - totalBudgeted;
+  const budgetedPct =
+    template.income > 0
+      ? Math.min((totalBudgeted / template.income) * 100, 100)
+      : 0;
+  const overBudget = remainingToBudget < 0;
+
   return (
     <div className="flex flex-col gap-6">
+      <div className="bg-surface rounded-card p-5 shadow-sm">
+        <p className="text-sm text-fg-muted mb-1">Remaining to budget</p>
+        <p
+          className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}
+        >
+          {fmt(remainingToBudget)} kr
+        </p>
+        <div className="w-full bg-border rounded-full h-2.5 overflow-hidden">
+          <div
+            className={`h-2.5 rounded-full transition-all ${overBudget ? "bg-danger" : "bg-primary"}`}
+            style={{ width: `${budgetedPct}%` }}
+          />
+        </div>
+        <p className="text-xs text-fg-muted mt-1.5">
+          {fmt(totalBudgeted)} of {fmt(template.income)} kr budgeted
+        </p>
+      </div>
       <div
         className="flex bg-surface rounded-card p-5 shadow-sm"
         onClick={() => setIncomeEditing(true)}
@@ -47,11 +79,11 @@ export default function Plan() {
           <p className="text-sm text-fg-muted mb-4">No categories yet.</p>
         )}
 
-        <div className="flex flex-col divide-y divide-border">
+        <div className="flex flex-col divide-y divide-border border-y border-border">
           {template.categories.map((cat) => (
             <div
               key={cat.id}
-              className="flex items-center py-3 first:pt-0 last:pb-0 cursor-pointer"
+              className="flex items-center cursor-pointer py-3"
               onClick={() => {
                 setEditingCat(cat);
                 setFocusField("name");

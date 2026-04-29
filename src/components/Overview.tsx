@@ -31,6 +31,10 @@ export default function Overview() {
   const remaining = income - totalSpent;
   const spentPct = income > 0 ? Math.min((totalSpent / income) * 100, 100) : 0;
   const overBudget = remaining < 0;
+  const totalBudgeted = month.categories.reduce(
+    (sum, cat) => sum + cat.budget,
+    0,
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -75,38 +79,49 @@ export default function Overview() {
       </div>
 
       {month.categories.length > 0 && (
-        <div className="flex flex-col gap-2">
-          {month.categories.map((cat) => {
-            const spent = month.transactions
-              .filter((t) => t.categoryId === cat.id)
-              .reduce((sum, t) => sum + t.amount, 0);
-            const pct =
-              cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0;
-            const over = spent > cat.budget;
-            return (
-              <div
-                key={cat.id}
-                className="bg-surface rounded-input p-4 shadow-sm"
-              >
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-fg">
-                    {cat.name}
-                  </span>
-                  <span
-                    className={`text-sm font-medium ${over ? "text-danger" : "text-fg-muted"}`}
-                  >
-                    {fmt(spent)} / {fmt(cat.budget)} kr
-                  </span>
+        <div className="bg-surface rounded-card p-5 shadow-sm">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-base font-semibold text-fg mb-3">
+              Total Budgeted
+            </h3>
+            <span className=" font-medium text-fg-muted">
+              {fmt(totalBudgeted)} kr
+            </span>
+          </div>
+          <div className="flex flex-col gap-4">
+            {month.categories.map((cat) => {
+              const spent = month.transactions
+                .filter(
+                  (t) =>
+                    t.categoryId === cat.id ||
+                    (cat.id === "other" && t.categoryId === null),
+                )
+                .reduce((sum, t) => sum + t.amount, 0);
+              const pct =
+                cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0;
+              const over = spent > cat.budget;
+              return (
+                <div key={cat.id}>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-fg">
+                      {cat.name}
+                    </span>
+                    <span
+                      className={`text-sm font-medium ${over ? "text-danger" : "text-fg-muted"}`}
+                    >
+                      {fmt(spent)} / {fmt(cat.budget)} kr
+                    </span>
+                  </div>
+                  <div className="w-full bg-border rounded-full h-2 overflow-hidden">
+                    <div
+                      className={`h-2 rounded-full transition-all ${over ? "bg-danger" : "bg-primary"}`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-border rounded-full h-2 overflow-hidden">
-                  <div
-                    className={`h-2 rounded-full transition-all ${over ? "bg-danger" : "bg-primary"}`}
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

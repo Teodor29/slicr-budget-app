@@ -71,9 +71,9 @@ function AppInner() {
           className="flex-1 px-4 py-6"
           style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}
         >
-          {view === "overview"     && <Overview />}
+          {view === "overview" && <Overview />}
           {view === "transactions" && <Transactions />}
-          {view === "plan"         && <Plan />}
+          {view === "plan" && <Plan />}
         </main>
 
         {showFab && (
