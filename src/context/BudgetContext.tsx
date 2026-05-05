@@ -18,6 +18,7 @@ interface BudgetCtx {
   data: AppData;
   viewedMonth: string;
   setViewedMonth: (m: string) => void;
+  ensureMonthExists: (monthKey: string) => void;
   pendingNewMonth: string | null;
   confirmNewMonth: () => void;
   dismissNewMonth: () => void;
@@ -86,6 +87,25 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
   const dismissNewMonth = useCallback(() => {
     setPendingNewMonth(null);
   }, []);
+
+  const ensureMonthExists = useCallback(
+    (monthKey: string) => {
+      if (data.months[monthKey]) return;
+      const next: AppData = {
+        ...data,
+        months: {
+          ...data.months,
+          [monthKey]: {
+            income: data.template.income,
+            categories: data.template.categories.map((c) => ({ ...c })),
+            transactions: [],
+          },
+        },
+      };
+      update(next);
+    },
+    [data, update],
+  );
 
   const addTransaction = useCallback(
     (t: Omit<Transaction, "id">) => {
@@ -247,6 +267,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         data,
         viewedMonth,
         setViewedMonth,
+        ensureMonthExists,
         pendingNewMonth,
         confirmNewMonth,
         dismissNewMonth,

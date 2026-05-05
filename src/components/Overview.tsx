@@ -9,12 +9,18 @@ function formatMonthLabel(key: string) {
   });
 }
 
+function addMonths(monthKey: string, delta: number) {
+  const [y, m] = monthKey.split("-").map(Number);
+  const d = new Date(y, (m ?? 1) - 1 + delta, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
 function fmt(n: number) {
   return n.toLocaleString("en", { maximumFractionDigits: 0 });
 }
 
 export default function Overview() {
-  const { data, viewedMonth, setViewedMonth } = useBudget();
+  const { data, viewedMonth, setViewedMonth, ensureMonthExists } = useBudget();
 
   const monthKeys = Object.keys(data.months).sort();
   const idx = monthKeys.indexOf(viewedMonth);
@@ -50,10 +56,15 @@ export default function Overview() {
           {formatMonthLabel(viewedMonth)}
         </h1>
         <button
-          onClick={() =>
-            idx < monthKeys.length - 1 && setViewedMonth(monthKeys[idx + 1])
-          }
-          disabled={idx >= monthKeys.length - 1}
+          onClick={() => {
+            if (idx < monthKeys.length - 1) {
+              setViewedMonth(monthKeys[idx + 1]);
+              return;
+            }
+            const nextKey = addMonths(viewedMonth, 1);
+            ensureMonthExists(nextKey);
+            setViewedMonth(nextKey);
+          }}
           className="p-2 rounded-full text-fg-muted disabled:opacity-30 active:bg-subtle"
         >
           <MdChevronRight className="w-6 h-6" />
