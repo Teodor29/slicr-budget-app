@@ -1,76 +1,60 @@
 import { useState } from "react";
 import { useBudget } from "../context/BudgetContext";
-import type { Transaction } from "../types";
+import type { RecurringTransaction } from "../types";
 
 interface Props {
+  recurring?: RecurringTransaction;
   onClose: () => void;
-  editTransaction?: Transaction;
-  focusField?: "amount" | "description" | "category" | "date" | null;
-  onDelete?: (id: string) => void;
 }
 
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function dayFromDateStr(date: string) {
-  const d = Number(date.slice(8, 10));
-  return Number.isFinite(d) && d >= 1 && d <= 31 ? d : 1;
-}
-
-export default function AddTransactionModal({
+export default function EditRecurringTransactionModal({
+  recurring,
   onClose,
-  editTransaction,
-  focusField,
-  onDelete,
 }: Props) {
-  const {
-    data,
-    viewedMonth,
-    addTransaction,
-    updateTransaction,
-    addRecurringTransaction,
-  } = useBudget();
-  const categories = data.months[viewedMonth]?.categories ?? [];
+  const { data, addRecurringTransaction, updateRecurringTransaction, deleteRecurringTransaction } =
+    useBudget();
 
-  const [amount, setAmount] = useState(
-    editTransaction ? String(editTransaction.amount) : "",
-  );
-  const [description, setDescription] = useState(
-    editTransaction?.description ?? "",
-  );
+  const categories = data.template.categories ?? [];
+
+  const [amount, setAmount] = useState(recurring ? String(recurring.amount) : "");
+  const [description, setDescription] = useState(recurring?.description ?? "");
   const [categoryId, setCategoryId] = useState<string | null>(
-    editTransaction?.categoryId ?? null,
+    recurring?.categoryId ?? null,
   );
-  const [date, setDate] = useState(editTransaction?.date ?? todayStr());
+  const [dayOfMonth, setDayOfMonth] = useState(
+    recurring ? String(recurring.dayOfMonth) : "1",
+  );
   const [error, setError] = useState("");
-  const [recurring, setRecurring] = useState(false);
 
   function handleSave() {
-    const parsed = parseFloat(amount);
-    if (!amount || isNaN(parsed) || parsed <= 0) {
+    const parsedAmount = parseFloat(amount);
+    const parsedDay = parseInt(dayOfMonth, 10);
+    if (!amount || isNaN(parsedAmount) || parsedAmount <= 0) {
       setError("Enter a valid amount");
       return;
     }
-    if (editTransaction) {
-      updateTransaction({
-        ...editTransaction,
-        amount: parsed,
+    if (!dayOfMonth || isNaN(parsedDay) || parsedDay < 1 || parsedDay > 31) {
+      setError("Enter a day between 1 and 31");
+      return;
+    }
+
+    if (recurring) {
+      updateRecurringTransaction({
+        ...recurring,
+        amount: parsedAmount,
         description,
         categoryId,
-        date,
+        dayOfMonth: parsedDay,
       });
     } else {
-      addTransaction({ categoryId, amount: parsed, description, date });
-      if (recurring) {
-        addRecurringTransaction({
-          categoryId,
-          amount: parsed,
-          description,
-          dayOfMonth: dayFromDateStr(date),
-        });
-      }
+      addRecurringTransaction({
+        amount: parsedAmount,
+        description,
+        categoryId,
+        dayOfMonth: parsedDay,
+      });
     }
+
     onClose();
   }
 
@@ -88,7 +72,7 @@ export default function AddTransactionModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-xl font-bold text-fg mb-5">
-          {editTransaction ? "Edit expense" : "Add expense"}
+          {recurring ? "Edit fixed expense" : "Add fixed expense"}
         </h2>
 
         <div className="flex flex-col gap-4">
@@ -104,24 +88,18 @@ export default function AddTransactionModal({
                 setError("");
               }}
               className={inputClass}
-              autoFocus={
-                focusField !== "description" &&
-                focusField !== "category" &&
-                focusField !== "date"
-              }
+              autoFocus
             />
-            {error && <p className="text-danger text-xs mt-1">{error}</p>}
           </div>
 
           <div>
             <label className={labelClass}>Description</label>
             <input
               type="text"
-              placeholder="What was it for?"
+              placeholder="e.g. Rent, Spotify"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className={inputClass}
-              autoFocus={focusField === "description"}
             />
           </div>
 
@@ -131,7 +109,6 @@ export default function AddTransactionModal({
               value={categoryId ?? ""}
               onChange={(e) => setCategoryId(e.target.value || null)}
               className={inputClass}
-              autoFocus={focusField === "category"}
             >
               <option value="">Other</option>
               {categories.map((cat) => (
@@ -143,27 +120,21 @@ export default function AddTransactionModal({
           </div>
 
           <div>
-            <label className={labelClass}>Date</label>
+            <label className={labelClass}>Day of month (1-31) *</label>
             <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={31}
+              value={dayOfMonth}
+              onChange={(e) => {
+                setDayOfMonth(e.target.value);
+                setError("");
+              }}
               className={inputClass}
-              autoFocus={focusField === "date"}
             />
+            {error && <p className="text-danger text-xs mt-1">{error}</p>}
           </div>
-
-          {!editTransaction && (
-            <label className="flex items-center gap-2 text-sm text-fg">
-              <input
-                type="checkbox"
-                checked={recurring}
-                onChange={(e) => setRecurring(e.target.checked)}
-                className="w-4 h-4"
-              />
-              Fast varje månad
-            </label>
-          )}
         </div>
 
         <div className="flex gap-3 mt-6">
@@ -181,18 +152,19 @@ export default function AddTransactionModal({
           </button>
         </div>
 
-        {editTransaction && onDelete && (
+        {recurring && (
           <button
             onClick={() => {
-              onDelete(editTransaction.id);
+              deleteRecurringTransaction(recurring.id);
               onClose();
             }}
             className="w-full mt-3 py-3 rounded-input border border-danger text-danger font-medium active:bg-red-50"
           >
-            Delete transaction
+            Delete fixed expense
           </button>
         )}
       </div>
     </div>
   );
 }
+

@@ -13,6 +13,7 @@ import {
   getCurrentMonthKey,
   createInitialData,
 } from "../lib/storage";
+import type { RecurringTransaction } from "../types";
 
 interface BudgetCtx {
   data: AppData;
@@ -25,6 +26,9 @@ interface BudgetCtx {
   addTransaction: (t: Omit<Transaction, "id">) => void;
   updateTransaction: (t: Transaction) => void;
   deleteTransaction: (id: string) => void;
+  addRecurringTransaction: (t: Omit<RecurringTransaction, "id">) => void;
+  updateRecurringTransaction: (t: RecurringTransaction) => void;
+  deleteRecurringTransaction: (id: string) => void;
   addCategory: (cat: Omit<Category, "id">) => void;
   updateCategory: (cat: Category) => void;
   deleteCategory: (id: string) => void;
@@ -32,6 +36,29 @@ interface BudgetCtx {
 }
 
 const BudgetContext = createContext<BudgetCtx | null>(null);
+
+function daysInMonth(monthKey: string) {
+  const [y, m] = monthKey.split("-").map(Number);
+  const year = y ?? new Date().getFullYear();
+  const month = m ?? 1;
+  return new Date(year, month, 0).getDate();
+}
+
+function dateForMonthDay(monthKey: string, dayOfMonth: number) {
+  const max = daysInMonth(monthKey);
+  const day = Math.min(Math.max(1, Math.floor(dayOfMonth)), max);
+  return `${monthKey}-${String(day).padStart(2, "0")}`;
+}
+
+function materializeRecurring(monthKey: string, recurring: RecurringTransaction[]) {
+  return recurring.map((rt) => ({
+    id: crypto.randomUUID(),
+    categoryId: rt.categoryId,
+    amount: rt.amount,
+    description: rt.description,
+    date: dateForMonthDay(monthKey, rt.dayOfMonth),
+  }));
+}
 
 export function BudgetProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(() => {
@@ -58,7 +85,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
     if (realMonth !== data.currentMonth) {
       setPendingNewMonth(realMonth);
     }
-  }, []);
+  }, [data.currentMonth]);
 
   const update = useCallback((next: AppData) => {
     setData(next);
@@ -67,6 +94,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
 
   const confirmNewMonth = useCallback(() => {
     if (!pendingNewMonth) return;
+    const recurring = data.template.recurringTransactions ?? [];
     const next: AppData = {
       ...data,
       months: {
@@ -74,7 +102,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         [pendingNewMonth]: {
           income: data.template.income,
           categories: data.template.categories.map((c) => ({ ...c })),
-          transactions: [],
+          transactions: materializeRecurring(pendingNewMonth, recurring),
         },
       },
       currentMonth: pendingNewMonth,
@@ -91,6 +119,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
   const ensureMonthExists = useCallback(
     (monthKey: string) => {
       if (data.months[monthKey]) return;
+      const recurring = data.template.recurringTransactions ?? [];
       const next: AppData = {
         ...data,
         months: {
@@ -98,7 +127,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
           [monthKey]: {
             income: data.template.income,
             categories: data.template.categories.map((c) => ({ ...c })),
-            transactions: [],
+            transactions: materializeRecurring(monthKey, recurring),
           },
         },
       };
@@ -164,6 +193,55 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
       });
     },
     [data, viewedMonth, update],
+  );
+
+  const addRecurringTransaction = useCallback(
+    (t: Omit<RecurringTransaction, "id">) => {
+      const next: AppData = {
+        ...data,
+        template: {
+          ...data.template,
+          recurringTransactions: [
+            ...(data.template.recurringTransactions ?? []),
+            { ...t, id: crypto.randomUUID() },
+          ],
+        },
+      };
+      update(next);
+    },
+    [data, update],
+  );
+
+  const updateRecurringTransaction = useCallback(
+    (t: RecurringTransaction) => {
+      const next: AppData = {
+        ...data,
+        template: {
+          ...data.template,
+          recurringTransactions: (data.template.recurringTransactions ?? []).map(
+            (rt) => (rt.id === t.id ? t : rt),
+          ),
+        },
+      };
+      update(next);
+    },
+    [data, update],
+  );
+
+  const deleteRecurringTransaction = useCallback(
+    (id: string) => {
+      const next: AppData = {
+        ...data,
+        template: {
+          ...data.template,
+          recurringTransactions: (data.template.recurringTransactions ?? []).filter(
+            (rt) => rt.id !== id,
+          ),
+        },
+      };
+      update(next);
+    },
+    [data, update],
   );
 
   const addCategory = useCallback(
@@ -274,6 +352,9 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         addTransaction,
         updateTransaction,
         deleteTransaction,
+        addRecurringTransaction,
+        updateRecurringTransaction,
+        deleteRecurringTransaction,
         addCategory,
         updateCategory,
         deleteCategory,

@@ -4,7 +4,8 @@ import type { Category } from "../types";
 import AddCategoryModal from "./AddCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
 import EditIncomeModal from "./EditIncomeModal";
-import { MdEdit } from "react-icons/md";
+import EditRecurringTransactionModal from "./EditRecurringTransactionModal";
+import { MdEdit, MdAdd } from "react-icons/md";
 
 function fmt(n: number) {
   return n.toLocaleString("en", { maximumFractionDigits: 0 });
@@ -12,12 +13,17 @@ function fmt(n: number) {
 
 export default function Plan() {
   const { data, setIncome, updateCategory, deleteCategory } = useBudget();
-  const template = data?.template ?? { income: 0, categories: [] };
+  const template = data.template;
+  const recurring = template.recurringTransactions ?? [];
 
   const [incomeEditing, setIncomeEditing] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [editingCat, setEditingCat] = useState<Category | null>(null);
   const [focusField, setFocusField] = useState<"name" | "budget" | null>(null);
+  const [editingRecurringId, setEditingRecurringId] = useState<string | null>(
+    null,
+  );
+  const [showAddRecurring, setShowAddRecurring] = useState(false);
 
   function handleSaveCategory(cat: Category) {
     updateCategory(cat);
@@ -25,6 +31,11 @@ export default function Plan() {
 
   function handleSaveIncome(amount: number) {
     setIncome(amount);
+  }
+
+  function getCategoryName(id: string | null) {
+    if (!id) return "Other";
+    return template.categories.find((c: Category) => c.id === id)?.name ?? "Other";
   }
 
   const totalBudgeted = template.categories.reduce(
@@ -117,6 +128,50 @@ export default function Plan() {
         </button>
       </div>
 
+      <div className="bg-surface rounded-card p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base font-semibold text-fg">Fixed expenses</h3>
+          <button
+            onClick={() => setShowAddRecurring(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-input bg-subtle text-fg text-sm font-semibold active:bg-border"
+          >
+            <MdAdd className="w-4 h-4" />
+            Add
+          </button>
+        </div>
+
+        {recurring.length === 0 ? (
+          <p className="text-sm text-fg-muted">No fixed expenses yet.</p>
+        ) : (
+          <div className="flex flex-col divide-y divide-border border-y border-border">
+            {recurring
+              .slice()
+              .sort((a, b) => a.dayOfMonth - b.dayOfMonth)
+              .map((rt) => (
+                <div
+                  key={rt.id}
+                  className="flex items-center cursor-pointer py-3"
+                  onClick={() => setEditingRecurringId(rt.id)}
+                >
+                  <div>
+                    <p className="text-sm font-medium text-fg">
+                      {rt.description || getCategoryName(rt.categoryId)}
+                    </p>
+                    <p className="text-xs text-fg-muted mt-0.5">
+                      Day {rt.dayOfMonth} · {getCategoryName(rt.categoryId)}
+                    </p>
+                  </div>
+                  <div className="flex-1" />
+                  <span className="text-sm font-semibold text-fg">
+                    {rt.amount.toLocaleString("en")} kr
+                  </span>
+                  <MdEdit className="w-4 h-4 text-fg-muted ml-2" />
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+
       {showAddCategory && (
         <AddCategoryModal onClose={() => setShowAddCategory(false)} />
       )}
@@ -138,6 +193,16 @@ export default function Plan() {
           income={template.income}
           onClose={() => setIncomeEditing(false)}
           onSave={handleSaveIncome}
+        />
+      )}
+
+      {showAddRecurring && (
+        <EditRecurringTransactionModal onClose={() => setShowAddRecurring(false)} />
+      )}
+      {editingRecurringId && (
+        <EditRecurringTransactionModal
+          recurring={recurring.find((r) => r.id === editingRecurringId)}
+          onClose={() => setEditingRecurringId(null)}
         />
       )}
     </div>

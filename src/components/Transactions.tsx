@@ -8,12 +8,9 @@ export default function Transactions() {
   const { data, viewedMonth, deleteTransaction } = useBudget();
   const month = data.months[viewedMonth];
   const [editTx, setEditTx] = useState<Transaction | null>(null);
-  const [focusField, setFocusField] = useState<
-    "amount" | "description" | "category" | "date" | null
-  >(null);
+  type FocusField = "amount" | "description" | "category" | "date";
+  const [focusField, setFocusField] = useState<FocusField | null>(null);
   const [showAdd, setShowAdd] = useState(false);
-
-  const isCurrentMonth = viewedMonth === data.currentMonth;
 
   const transactions = [...(month?.transactions ?? [])].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
@@ -49,9 +46,9 @@ export default function Transactions() {
     });
   }
 
-  function handleEditField(tx: Transaction, field: string) {
+  function handleEditField(tx: Transaction, field: FocusField) {
     setEditTx(tx);
-    setFocusField(field as any);
+    setFocusField(field);
   }
 
   return (
@@ -60,7 +57,6 @@ export default function Transactions() {
         <h2 className="hidden md:block text-2xl font-semibold text-fg">
           Transactions
         </h2>
-        {isCurrentMonth && (
           <button
             onClick={() => setShowAdd(true)}
             className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-input bg-primary text-white text-sm font-semibold active:bg-primary-hover"
@@ -68,7 +64,6 @@ export default function Transactions() {
             <MdAdd className="w-4 h-4" />
             Add
           </button>
-        )}
       </div>
 
       {transactions.length === 0 ? (
@@ -104,9 +99,7 @@ export default function Transactions() {
                           <span className="text-sm font-medium text-fg">
                             {tx.amount.toLocaleString("en")} kr
                           </span>
-                          {isCurrentMonth && (
                             <MdEdit className="w-4 h-4 text-fg-muted" />
-                          )}
                         </div>
                       </div>
                     </div>

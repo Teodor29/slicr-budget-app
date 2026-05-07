@@ -17,6 +17,12 @@ export function loadData(): AppData | null {
     if (data.template?.income === undefined) {
       data.template.income = 0;
     }
+    const rt = (data.template as { recurringTransactions?: unknown })
+      .recurringTransactions;
+    if (!Array.isArray(rt)) {
+      (data.template as { recurringTransactions: unknown[] }).recurringTransactions =
+        [];
+    }
     return data;
   } catch {
     return null;
@@ -38,6 +44,7 @@ export function createInitialData(): AppData {
     template: {
       income: 0,
       categories: [{ id: "other", name: "Other", budget: 0 }],
+      recurringTransactions: [],
     },
     months: {
       [currentMonth]: {
