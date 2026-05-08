@@ -10,6 +10,7 @@ export interface Transaction {
   amount: number;
   description: string;
   date: string;
+  recurring?: boolean;
 }
 
 export interface Month {

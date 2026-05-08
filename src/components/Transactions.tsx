@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useBudget } from "../context/BudgetContext";
 import type { Transaction } from "../types";
 import AddTransactionModal from "./AddTransactionModal";
-import { MdEdit, MdAdd } from "react-icons/md";
+import { MdEdit, MdAdd, MdRepeat } from "react-icons/md";
 
 export default function Transactions() {
   const { data, viewedMonth, deleteTransaction } = useBudget();
@@ -72,6 +72,7 @@ export default function Transactions() {
                         <p className="text-xs text-fg-muted mt-0.5">{tx.description}</p>
                       </div>
                       <div className="flex items-center gap-2">
+                        {tx.recurring && <MdRepeat className="w-4 h-4 text-fg-muted" />}
                         <span className="text-sm font-medium text-fg">
                           {tx.amount.toLocaleString("en")} kr
                         </span>

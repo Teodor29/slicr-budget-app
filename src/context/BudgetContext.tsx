@@ -81,9 +81,15 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
   function confirmNewMonth() {
     if (!pendingNewMonth) return;
     const isRealCurrentMonth = pendingNewMonth === getCurrentMonthKey();
+    const prevMonth = data.months[data.currentMonth];
+    const recurringTxs = (prevMonth?.transactions ?? [])
+      .filter((tx) => tx.recurring)
+      .map((tx) => ({ ...tx, id: crypto.randomUUID(), date: pendingNewMonth + "-01" }));
+    const newMonth = buildMonth(data.template);
+    newMonth.transactions = recurringTxs;
     save({
       ...data,
-      months: { ...data.months, [pendingNewMonth]: buildMonth(data.template) },
+      months: { ...data.months, [pendingNewMonth]: newMonth },
       ...(isRealCurrentMonth ? { currentMonth: pendingNewMonth } : {}),
     });
     setViewedMonth(pendingNewMonth);

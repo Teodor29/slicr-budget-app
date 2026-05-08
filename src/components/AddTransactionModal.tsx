@@ -21,6 +21,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
   const [description, setDescription] = useState(editTransaction?.description ?? "");
   const [categoryId, setCategoryId] = useState<string | null>(editTransaction?.categoryId ?? null);
   const [date, setDate] = useState(editTransaction?.date ?? todayStr());
+  const [recurring, setRecurring] = useState(editTransaction?.recurring ?? false);
   const [error, setError] = useState("");
 
   function handleSave() {
@@ -30,9 +31,9 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
       return;
     }
     if (editTransaction) {
-      updateTransaction({ ...editTransaction, amount: parsed, description, categoryId, date });
+      updateTransaction({ ...editTransaction, amount: parsed, description, categoryId, date, recurring });
     } else {
-      addTransaction({ categoryId, amount: parsed, description, date });
+      addTransaction({ categoryId, amount: parsed, description, date, recurring });
     }
     onClose();
   }
@@ -90,6 +91,19 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
             className="input"
           />
         </div>
+
+        <label className="flex items-center justify-between cursor-pointer select-none py-1">
+          <span className="text-sm text-fg">Repeat every month</span>
+          <input
+            type="checkbox"
+            checked={recurring}
+            onChange={(e) => setRecurring(e.target.checked)}
+            className="sr-only"
+          />
+          <div className={`relative w-11 h-6 rounded-full transition-colors ${recurring ? "bg-primary" : "bg-border"}`}>
+            <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${recurring ? "translate-x-5" : ""}`} />
+          </div>
+        </label>
       </div>
 
       <div className="flex gap-3 mt-6">
