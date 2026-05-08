@@ -12,14 +12,6 @@ export interface Transaction {
   date: string;
 }
 
-export interface RecurringTransaction {
-  id: string;
-  categoryId: string | null;
-  amount: number;
-  description: string;
-  dayOfMonth: number;
-}
-
 export interface Month {
   income: number;
   categories: Category[];
@@ -29,7 +21,6 @@ export interface Month {
 export interface Template {
   income: number;
   categories: Category[];
-  recurringTransactions: RecurringTransaction[];
 }
 
 export interface AppData {

@@ -1,7 +1,8 @@
 import { useBudget } from "../context/BudgetContext";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { fmt } from "../lib/format";
 
-function formatMonthLabel(key: string) {
+function monthLabel(key: string) {
   const [year, month] = key.split("-");
   return new Date(Number(year), Number(month) - 1).toLocaleString("en", {
     month: "long",
@@ -11,12 +12,17 @@ function formatMonthLabel(key: string) {
 
 function addMonths(monthKey: string, delta: number) {
   const [y, m] = monthKey.split("-").map(Number);
-  const d = new Date(y, (m ?? 1) - 1 + delta, 1);
+  const d = new Date(y, m - 1 + delta, 1);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
-function fmt(n: number) {
-  return n.toLocaleString("en", { maximumFractionDigits: 0 });
+function spentForCategory(
+  transactions: { categoryId: string | null; amount: number }[],
+  catId: string,
+) {
+  return transactions
+    .filter((t) => t.categoryId === catId || (catId === "other" && !t.categoryId))
+    .reduce((sum, t) => sum + t.amount, 0);
 }
 
 export default function Overview() {
@@ -27,9 +33,7 @@ export default function Overview() {
   const month = data.months[viewedMonth];
 
   if (!month) {
-    return (
-      <p className="text-center text-fg-muted py-12">No data for this month.</p>
-    );
+    return <p className="text-center text-fg-muted py-12">No data for this month.</p>;
   }
 
   const totalSpent = month.transactions.reduce((sum, t) => sum + t.amount, 0);
@@ -37,10 +41,17 @@ export default function Overview() {
   const remaining = income - totalSpent;
   const spentPct = income > 0 ? Math.min((totalSpent / income) * 100, 100) : 0;
   const overBudget = remaining < 0;
-  const totalBudgeted = month.categories.reduce(
-    (sum, cat) => sum + cat.budget,
-    0,
-  );
+  const totalBudgeted = month.categories.reduce((sum, cat) => sum + cat.budget, 0);
+
+  function goNext() {
+    if (idx < monthKeys.length - 1) {
+      setViewedMonth(monthKeys[idx + 1]);
+    } else {
+      const next = addMonths(viewedMonth, 1);
+      ensureMonthExists(next);
+      setViewedMonth(next);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -53,19 +64,11 @@ export default function Overview() {
           <MdChevronLeft className="w-6 h-6" />
         </button>
         <h1 className="text-lg md:text-3xl font-semibold text-fg">
-          {formatMonthLabel(viewedMonth)}
+          {monthLabel(viewedMonth)}
         </h1>
         <button
-          onClick={() => {
-            if (idx < monthKeys.length - 1) {
-              setViewedMonth(monthKeys[idx + 1]);
-              return;
-            }
-            const nextKey = addMonths(viewedMonth, 1);
-            ensureMonthExists(nextKey);
-            setViewedMonth(nextKey);
-          }}
-          className="p-2 rounded-full text-fg-muted disabled:opacity-30 active:bg-subtle"
+          onClick={goNext}
+          className="p-2 rounded-full text-fg-muted active:bg-subtle"
         >
           <MdChevronRight className="w-6 h-6" />
         </button>
@@ -73,9 +76,7 @@ export default function Overview() {
 
       <div className="bg-surface rounded-card p-5 shadow-sm">
         <p className="text-sm text-fg-muted mb-1">Remaining</p>
-        <p
-          className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}
-        >
+        <p className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}>
           {fmt(remaining)} kr
         </p>
         <div className="w-full bg-border rounded-full h-2.5 overflow-hidden">
@@ -92,34 +93,19 @@ export default function Overview() {
       {month.categories.length > 0 && (
         <div className="bg-surface rounded-card p-5 shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-base font-semibold text-fg mb-3">
-              Total Budgeted
-            </h3>
-            <span className=" font-medium text-fg-muted">
-              {fmt(totalBudgeted)} kr
-            </span>
+            <h3 className="text-base font-semibold text-fg">Total Budgeted</h3>
+            <span className="font-medium text-fg-muted">{fmt(totalBudgeted)} kr</span>
           </div>
           <div className="flex flex-col gap-4">
             {month.categories.map((cat) => {
-              const spent = month.transactions
-                .filter(
-                  (t) =>
-                    t.categoryId === cat.id ||
-                    (cat.id === "other" && t.categoryId === null),
-                )
-                .reduce((sum, t) => sum + t.amount, 0);
-              const pct =
-                cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0;
+              const spent = spentForCategory(month.transactions, cat.id);
+              const pct = cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0;
               const over = spent > cat.budget;
               return (
                 <div key={cat.id}>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-fg">
-                      {cat.name}
-                    </span>
-                    <span
-                      className={`text-sm font-medium ${over ? "text-danger" : "text-fg-muted"}`}
-                    >
+                    <span className="text-sm font-medium text-fg">{cat.name}</span>
+                    <span className={`text-sm font-medium ${over ? "text-danger" : "text-fg-muted"}`}>
                       {fmt(spent)} / {fmt(cat.budget)} kr
                     </span>
                   </div>

@@ -7,21 +7,13 @@ export function loadData(): AppData | null {
   if (!raw) return null;
   try {
     const data = JSON.parse(raw) as AppData;
-    // Ensure all months have income property (migration for old data)
     for (const monthKey in data.months) {
       if (data.months[monthKey].income === undefined) {
         data.months[monthKey].income = data.template?.income ?? 0;
       }
     }
-    // Ensure template has income
     if (data.template?.income === undefined) {
       data.template.income = 0;
-    }
-    const rt = (data.template as { recurringTransactions?: unknown })
-      .recurringTransactions;
-    if (!Array.isArray(rt)) {
-      (data.template as { recurringTransactions: unknown[] }).recurringTransactions =
-        [];
     }
     return data;
   } catch {
@@ -44,7 +36,6 @@ export function createInitialData(): AppData {
     template: {
       income: 0,
       categories: [{ id: "other", name: "Other", budget: 0 }],
-      recurringTransactions: [],
     },
     months: {
       [currentMonth]: {
