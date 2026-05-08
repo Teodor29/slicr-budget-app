@@ -51,7 +51,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
 
   return (
     <Modal title={editTransaction ? "Edit expense" : "Add expense"} onClose={onClose}>
-      <div className="flex flex-col gap-4">
+      <div className="form-stack">
         <div>
           <label className="label">Amount ({currency}) *</label>
           <input
@@ -63,7 +63,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
             className="input"
             autoFocus
           />
-          {error && <p className="text-danger text-xs mt-1">{error}</p>}
+          {error && <p className="error-msg">{error}</p>}
         </div>
 
         <div>
@@ -122,7 +122,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
         </div>
 
         <label className="flex items-center justify-between cursor-pointer select-none py-1">
-          <span className="text-sm text-fg">Repeat every month</span>
+          <span className="text-sm">Repeat every month</span>
           <input
             type="checkbox"
             checked={recurring}
@@ -135,7 +135,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
         </label>
       </div>
 
-      <div className="flex gap-3 mt-6">
+      <div className="modal-actions">
         <button
           onClick={onClose}
           className="flex-1 btn-secondary"

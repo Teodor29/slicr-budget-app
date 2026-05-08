@@ -22,7 +22,7 @@ export default function AddCategoryModal({ onClose }: Props) {
 
   return (
     <Modal title="Add category" onClose={onClose}>
-      <div className="flex flex-col gap-4">
+      <div className="form-stack">
         <div>
           <label className="label">Name *</label>
           <input
@@ -46,11 +46,11 @@ export default function AddCategoryModal({ onClose }: Props) {
             onKeyDown={(e) => { if (e.key === "Enter") handleSave(); }}
             className="input"
           />
-          {error && <p className="text-danger text-xs mt-1">{error}</p>}
+          {error && <p className="error-msg">{error}</p>}
         </div>
       </div>
 
-      <div className="flex gap-3 mt-6">
+      <div className="modal-actions">
         <button
           onClick={onClose}
           className="flex-1 btn-secondary"

@@ -16,7 +16,7 @@ export default function Modal({ title, onClose, children }: Props) {
         className="bg-surface rounded-card p-6 w-full max-w-md max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-xl font-bold text-fg mb-5">{title}</h2>
+        <h2 className="text-xl font-bold mb-5">{title}</h2>
         {children}
       </div>
     </div>

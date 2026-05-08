@@ -36,9 +36,9 @@ export default function Transactions() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="form-stack">
       <div className="flex items-center justify-between">
-        <h2 className="hidden md:block text-2xl font-semibold text-fg">Transactions</h2>
+        <h2 className="hidden md:block">Transactions</h2>
         <button
           onClick={() => setShowAdd(true)}
           className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-input bg-primary text-white text-sm font-semibold active:bg-primary-hover"
@@ -49,12 +49,12 @@ export default function Transactions() {
       </div>
 
       {sorted.length === 0 ? (
-        <p className="text-center text-fg-muted py-10">No transactions yet.</p>
+        <p className="text-center-muted py-10">No transactions yet.</p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="form-stack">
           {groups.map(({ date, txs }) => (
             <div key={date}>
-              <h3 className="text-sm font-semibold text-fg-muted px-4 mb-2">
+              <h3 className="text-sm font-semibold-muted px-4 mb-2">
                 {formatDate(date)}
               </h3>
               <div className="bg-surface px-5 py-2 rounded-card shadow-sm">
@@ -66,17 +66,17 @@ export default function Transactions() {
                       className="flex items-center py-3 cursor-pointer"
                     >
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-fg">
+                        <p className="text-sm font-medium">
                           {getCategoryName(tx.categoryId)}
                         </p>
-                        <p className="text-xs text-fg-muted mt-0.5">{tx.description}</p>
+                        <p className="text-xs-muted mt-0.5">{tx.description}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        {tx.recurring && <MdRepeat className="w-4 h-4 text-fg-muted" />}
-                        <span className="text-sm font-medium text-fg">
+                        {tx.recurring && <MdRepeat className="w-4 h-4-muted" />}
+                        <span className="text-sm font-medium">
                           {tx.amount.toLocaleString("en")} {currency}
                         </span>
-                        <MdEdit className="w-4 h-4 text-fg-muted" />
+                        <MdEdit className="w-4 h-4-muted" />
                       </div>
                     </div>
                   ))}
