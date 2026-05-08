@@ -28,4 +28,5 @@ export interface AppData {
   template: Template;
   months: Record<string, Month>;
   currentMonth: string;
+  currency: string;
 }

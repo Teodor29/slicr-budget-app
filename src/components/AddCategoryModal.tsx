@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function AddCategoryModal({ onClose }: Props) {
-  const { addCategory } = useBudget();
+  const { addCategory, currency } = useBudget();
   const [name, setName] = useState("");
   const [budget, setBudget] = useState("");
   const [error, setError] = useState("");
@@ -36,7 +36,7 @@ export default function AddCategoryModal({ onClose }: Props) {
           />
         </div>
         <div>
-          <label className="label">Monthly budget (kr) *</label>
+          <label className="label">Monthly budget ({currency}) *</label>
           <input
             type="number"
             inputMode="decimal"

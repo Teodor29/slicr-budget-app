@@ -14,7 +14,7 @@ function todayStr() {
 }
 
 export default function AddTransactionModal({ onClose, editTransaction, onDelete }: Props) {
-  const { data, viewedMonth, addTransaction, updateTransaction, addCategory } = useBudget();
+  const { data, viewedMonth, addTransaction, updateTransaction, addCategory, currency } = useBudget();
   const categories = data.months[viewedMonth]?.categories ?? [];
 
   const [amount, setAmount] = useState(editTransaction ? String(editTransaction.amount) : "");
@@ -53,7 +53,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
     <Modal title={editTransaction ? "Edit expense" : "Add expense"} onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div>
-          <label className="label">Amount (kr) *</label>
+          <label className="label">Amount ({currency}) *</label>
           <input
             type="number"
             inputMode="decimal"

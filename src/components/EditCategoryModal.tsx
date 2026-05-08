@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Category } from "../types";
 import Modal from "./Modal";
+import { useBudget } from "../context/BudgetContext";
 
 interface Props {
   category: Category;
@@ -19,6 +20,7 @@ export default function EditCategoryModal({
   canDelete,
   focusField,
 }: Props) {
+  const { currency } = useBudget();
   const [name, setName] = useState(category.name);
   const [budget, setBudget] = useState(String(category.budget));
   const [error, setError] = useState("");
@@ -46,7 +48,7 @@ export default function EditCategoryModal({
           />
         </div>
         <div>
-          <label className="label">Monthly budget (kr) *</label>
+          <label className="label">Monthly budget ({currency}) *</label>
           <input
             type="number"
             inputMode="decimal"

@@ -15,6 +15,9 @@ export function loadData(): AppData | null {
     if (data.template?.income === undefined) {
       data.template.income = 0;
     }
+    if (!data.currency) {
+      data.currency = "kr";
+    }
     return data;
   } catch {
     return null;
@@ -45,5 +48,6 @@ export function createInitialData(): AppData {
       },
     },
     currentMonth,
+    currency: "kr",
   };
 }

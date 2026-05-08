@@ -28,6 +28,8 @@ interface BudgetCtx {
   updateCategory: (cat: Category) => void;
   deleteCategory: (id: string) => void;
   setIncome: (amount: number) => void;
+  currency: string;
+  setCurrency: (c: string) => void;
 }
 
 const BudgetContext = createContext<BudgetCtx | null>(null);
@@ -176,6 +178,10 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  function setCurrency(c: string) {
+    save({ ...data, currency: c });
+  }
+
   return (
     <BudgetContext.Provider
       value={{
@@ -193,6 +199,8 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         updateCategory,
         deleteCategory,
         setIncome,
+        currency: data.currency,
+        setCurrency,
       }}
     >
       {children}

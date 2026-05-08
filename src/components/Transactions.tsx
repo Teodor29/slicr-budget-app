@@ -5,7 +5,7 @@ import AddTransactionModal from "./AddTransactionModal";
 import { MdEdit, MdAdd, MdRepeat } from "react-icons/md";
 
 export default function Transactions() {
-  const { data, viewedMonth, deleteTransaction } = useBudget();
+  const { data, viewedMonth, deleteTransaction, currency } = useBudget();
   const month = data.months[viewedMonth];
   const [editTx, setEditTx] = useState<Transaction | null>(null);
   const [showAdd, setShowAdd] = useState(false);
@@ -74,7 +74,7 @@ export default function Transactions() {
                       <div className="flex items-center gap-2">
                         {tx.recurring && <MdRepeat className="w-4 h-4 text-fg-muted" />}
                         <span className="text-sm font-medium text-fg">
-                          {tx.amount.toLocaleString("en")} kr
+                          {tx.amount.toLocaleString("en")} {currency}
                         </span>
                         <MdEdit className="w-4 h-4 text-fg-muted" />
                       </div>

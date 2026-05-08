@@ -20,7 +20,7 @@ function NewMonthPrompt() {
   if (!pendingNewMonth) return null;
 
   const [year, month] = pendingNewMonth.split("-");
-  const label = new Date(Number(year), Number(month) - 1).toLocaleString("sv", {
+  const label = new Date(Number(year), Number(month) - 1).toLocaleString("en", {
     month: "long",
     year: "numeric",
   });
@@ -29,14 +29,14 @@ function NewMonthPrompt() {
     <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-30 px-4 pb-4 sm:pb-0">
       <div className="bg-surface rounded-card p-6 w-full max-w-sm shadow-xl">
         <p className="text-fg mb-4">
-          {label.charAt(0).toUpperCase() + label.slice(1)} börjar. Din budget kopieras över till den nya månaden.
+          {label} is starting. Your budget will be copied to the new month.
         </p>
         <div className="flex gap-3">
           <button
             onClick={dismissNewMonth}
             className="flex-1 py-2.5 rounded-input border border-border text-fg-muted font-medium active:bg-subtle"
           >
-            Avbryt
+            Cancel
           </button>
           <button
             onClick={confirmNewMonth}

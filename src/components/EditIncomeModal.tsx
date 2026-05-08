@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Modal from "./Modal";
+import { useBudget } from "../context/BudgetContext";
 
 interface Props {
   income: number;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function EditIncomeModal({ income, onClose, onSave }: Props) {
+  const { currency } = useBudget();
   const [incomeInput, setIncomeInput] = useState(String(income));
   const [error, setError] = useState("");
 
@@ -25,7 +27,7 @@ export default function EditIncomeModal({ income, onClose, onSave }: Props) {
     <Modal title="Edit monthly income" onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div>
-          <label className="label">Monthly income (kr) *</label>
+          <label className="label">Monthly income ({currency}) *</label>
           <input
             type="number"
             inputMode="decimal"

@@ -8,7 +8,7 @@ import { MdEdit } from "react-icons/md";
 import { fmt } from "../lib/format";
 
 export default function Plan() {
-  const { data, setIncome, updateCategory, deleteCategory } = useBudget();
+  const { data, setIncome, updateCategory, deleteCategory, currency, setCurrency } = useBudget();
   const template = data.template;
 
   const [incomeEditing, setIncomeEditing] = useState(false);
@@ -27,7 +27,7 @@ export default function Plan() {
       <div className="card">
         <p className="text-sm text-fg-muted mb-1">Remaining to budget</p>
         <p className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}>
-          {fmt(remainingToBudget)} kr
+          {fmt(remainingToBudget)} {currency}
         </p>
         <div className="w-full bg-border rounded-full h-2.5 overflow-hidden">
           <div
@@ -36,21 +36,32 @@ export default function Plan() {
           />
         </div>
         <p className="text-xs text-fg-muted mt-1.5">
-          {fmt(totalBudgeted)} of {fmt(template.income)} kr budgeted
+          {fmt(totalBudgeted)} of {fmt(template.income)} {currency} budgeted
         </p>
       </div>
 
-      <div
-        className="flex card cursor-pointer"
-        onClick={() => setIncomeEditing(true)}
-      >
-        <div className="flex-1">
-          <h3 className="text-base font-semibold text-fg mb-2">Monthly income</h3>
-          <p className="text-2xl font-bold text-fg">
-            {(template.income ?? 0).toLocaleString("en")} kr
-          </p>
+      <div className="card">
+        <h3 className="text-base font-semibold text-fg mb-3">Monthly income</h3>
+        <div className="flex gap-2 items-center">
+          <div
+            className="flex flex-1 items-center justify-between cursor-pointer bg-subtle rounded-input px-3 py-2"
+            onClick={() => setIncomeEditing(true)}
+          >
+            <span className="text-lg font-bold text-fg">
+              {(template.income ?? 0).toLocaleString("en")}
+            </span>
+            <MdEdit className="w-4 h-4 text-fg-muted" />
+          </div>
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="input w-auto"
+          >
+            {["kr", "€", "$", "£", "¥", "CHF", "₹", "R$", "₩", "₺"].map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
         </div>
-        <MdEdit className="w-4 h-4 text-fg-muted mt-1" />
       </div>
 
       <div className="card">
@@ -79,7 +90,7 @@ export default function Plan() {
                 className="px-3 py-2 rounded-lg bg-subtle"
               >
                 <span className="text-sm font-medium text-fg">
-                  {cat.budget.toLocaleString("en")} kr
+                  {cat.budget.toLocaleString("en")} {currency}
                 </span>
               </button>
               <MdEdit className="w-4 h-4 text-fg-muted ml-2" />

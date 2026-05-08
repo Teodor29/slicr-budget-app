@@ -26,7 +26,7 @@ function spentForCategory(
 }
 
 export default function Overview() {
-  const { data, viewedMonth, setViewedMonth, promptMonth } = useBudget();
+  const { data, viewedMonth, setViewedMonth, promptMonth, currency } = useBudget();
 
   const monthKeys = Object.keys(data.months).sort();
   const idx = monthKeys.indexOf(viewedMonth);
@@ -75,7 +75,7 @@ export default function Overview() {
       <div className="card">
         <p className="text-sm text-fg-muted mb-1">Remaining</p>
         <p className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}>
-          {fmt(remaining)} kr
+          {fmt(remaining)} {currency}
         </p>
         <div className="w-full bg-border rounded-full h-2.5 overflow-hidden">
           <div
@@ -84,7 +84,7 @@ export default function Overview() {
           />
         </div>
         <p className="text-xs text-fg-muted mt-1.5">
-          {fmt(totalSpent)} of {fmt(income)} kr spent
+          {fmt(totalSpent)} of {fmt(income)} {currency} spent
         </p>
       </div>
 
@@ -92,7 +92,7 @@ export default function Overview() {
         <div className="card">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-base font-semibold text-fg">Total Budgeted</h3>
-            <span className="font-medium text-fg-muted">{fmt(totalBudgeted)} kr</span>
+            <span className="font-medium text-fg-muted">{fmt(totalBudgeted)} {currency}</span>
           </div>
           <div className="flex flex-col gap-4">
             {month.categories.map((cat) => {
@@ -104,7 +104,7 @@ export default function Overview() {
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-medium text-fg">{cat.name}</span>
                     <span className={`text-sm font-medium ${over ? "text-danger" : "text-fg-muted"}`}>
-                      {fmt(spent)} / {fmt(cat.budget)} kr
+                      {fmt(spent)} / {fmt(cat.budget)} {currency}
                     </span>
                   </div>
                   <div className="w-full bg-border rounded-full h-2 overflow-hidden">
