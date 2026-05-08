@@ -1,44 +1,47 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --page: oklch(90% 0 0);
-  --surface: oklch(95% 0 0);
-  --subtle: oklch(100% 0 0);
-  --border: oklch(85% 0 0);
-  --text: oklch(20% 0 0);
-  --text-muted: oklch(50% 0 0);
-  --primary: oklch(53% 0.22 264);
-  --primary-hover: oklch(47% 0.22 264);
-  --danger: oklch(55% 0.22 27);
-}
+@theme {
+  --color-page: oklch(90% 0 0);
+  --color-surface: oklch(95% 0 0);
+  --color-subtle: oklch(100% 0 0);
+  --color-border: oklch(85% 0 0);
+  --color-fg: oklch(20% 0 0);
+  --color-fg-muted: oklch(50% 0 0);
+  --color-primary: oklch(53% 0.22 264);
+  --color-primary-hover: oklch(47% 0.22 264);
+  --color-danger: oklch(55% 0.22 27);
 
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-  background: var(--page);
-}
-
-body {
-  padding-top: env(safe-area-inset-top);
-}
-
-#root {
-  min-height: 100%;
+  --radius-card: 1rem;
+  --radius-input: 0.75rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --page: oklch(15% 0 0);
-    --surface: oklch(20% 0 0);
-    --subtle: oklch(25% 0 0);
-    --border: oklch(30% 0.012 265);
-    --text: oklch(98% 0 0);
-    --text-muted: oklch(70% 0.012 265);
-    --primary: oklch(62% 0.22 264);
-    --primary-hover: oklch(57% 0.22 264);
-    --danger: oklch(0.7 0.16 27);
+    --color-page: oklch(15% 0 0);
+    --color-surface: oklch(20% 0 0);
+    --color-subtle: oklch(25% 0 0);
+    --color-border: oklch(30% 0.012 265);
+    --color-fg: oklch(98% 0 0);
+    --color-fg-muted: oklch(70% 0.012 265);
+    --color-primary: oklch(62% 0.22 264);
+    --color-primary-hover: oklch(57% 0.22 264);
+    --color-danger: oklch(0.7 0.16 27);
+  }
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--color-page);
+  }
+
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  #root {
+    min-height: 100%;
   }
 }
