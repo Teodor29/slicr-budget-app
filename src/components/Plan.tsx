@@ -35,7 +35,7 @@ export default function Plan() {
   const overBudget = remainingToBudget < 0;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 md:border-t md:border-border pt-6">
       <h2 className="hidden md:block">Plan</h2>
       <div className="card">
         <p className="text-sm-muted mb-1">Remaining to budget</p>
