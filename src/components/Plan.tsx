@@ -24,7 +24,7 @@ export default function Plan() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="bg-surface rounded-card p-5 shadow-sm">
+      <div className="card">
         <p className="text-sm text-fg-muted mb-1">Remaining to budget</p>
         <p className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}>
           {fmt(remainingToBudget)} kr
@@ -41,7 +41,7 @@ export default function Plan() {
       </div>
 
       <div
-        className="flex bg-surface rounded-card p-5 shadow-sm cursor-pointer"
+        className="flex card cursor-pointer"
         onClick={() => setIncomeEditing(true)}
       >
         <div className="flex-1">
@@ -53,7 +53,7 @@ export default function Plan() {
         <MdEdit className="w-4 h-4 text-fg-muted mt-1" />
       </div>
 
-      <div className="bg-surface rounded-card p-5 shadow-sm">
+      <div className="card">
         <h3 className="text-base font-semibold text-fg mb-3">Categories</h3>
 
         {template.categories.length === 0 && (

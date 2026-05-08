@@ -72,7 +72,7 @@ export default function Overview() {
         </button>
       </div>
 
-      <div className="bg-surface rounded-card p-5 shadow-sm">
+      <div className="card">
         <p className="text-sm text-fg-muted mb-1">Remaining</p>
         <p className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}>
           {fmt(remaining)} kr
@@ -89,7 +89,7 @@ export default function Overview() {
       </div>
 
       {month.categories.length > 0 && (
-        <div className="bg-surface rounded-card p-5 shadow-sm">
+        <div className="card">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-base font-semibold text-fg">Total Budgeted</h3>
             <span className="font-medium text-fg-muted">{fmt(totalBudgeted)} kr</span>

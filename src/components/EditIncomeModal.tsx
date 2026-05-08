@@ -21,15 +21,11 @@ export default function EditIncomeModal({ income, onClose, onSave }: Props) {
     onClose();
   }
 
-  const inputClass =
-    "w-full bg-surface text-fg border border-border rounded-input px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary";
-  const labelClass = "text-sm font-medium text-fg-muted block mb-1.5";
-
   return (
     <Modal title="Edit monthly income" onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div>
-          <label className={labelClass}>Monthly income (kr) *</label>
+          <label className="label">Monthly income (kr) *</label>
           <input
             type="number"
             inputMode="decimal"
@@ -40,7 +36,7 @@ export default function EditIncomeModal({ income, onClose, onSave }: Props) {
               if (e.key === "Enter") handleSave();
               if (e.key === "Escape") onClose();
             }}
-            className={inputClass}
+            className="input"
             autoFocus
           />
           {error && <p className="text-danger text-xs mt-1">{error}</p>}
@@ -50,13 +46,13 @@ export default function EditIncomeModal({ income, onClose, onSave }: Props) {
       <div className="flex gap-3 mt-6">
         <button
           onClick={onClose}
-          className="flex-1 py-3 rounded-input border border-border text-fg-muted font-medium active:bg-subtle"
+          className="flex-1 btn-secondary"
         >
           Cancel
         </button>
         <button
           onClick={handleSave}
-          className="flex-1 py-3 rounded-input bg-primary text-white font-semibold active:bg-primary-hover"
+          className="flex-1 btn-primary"
         >
           Save
         </button>
