@@ -14,7 +14,7 @@ function todayStr() {
 }
 
 export default function AddTransactionModal({ onClose, editTransaction, onDelete }: Props) {
-  const { data, viewedMonth, addTransaction, updateTransaction } = useBudget();
+  const { data, viewedMonth, addTransaction, updateTransaction, addCategory } = useBudget();
   const categories = data.months[viewedMonth]?.categories ?? [];
 
   const [amount, setAmount] = useState(editTransaction ? String(editTransaction.amount) : "");
@@ -23,6 +23,17 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
   const [date, setDate] = useState(editTransaction?.date ?? todayStr());
   const [recurring, setRecurring] = useState(editTransaction?.recurring ?? false);
   const [error, setError] = useState("");
+  const [newCatName, setNewCatName] = useState("");
+  const [addingCat, setAddingCat] = useState(false);
+
+  function handleCreateCategory() {
+    const name = newCatName.trim();
+    if (!name) return;
+    const id = addCategory({ name, budget: 0 });
+    setCategoryId(id);
+    setNewCatName("");
+    setAddingCat(false);
+  }
 
   function handleSave() {
     const parsed = parseFloat(amount);
@@ -68,18 +79,36 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
 
         <div>
           <label className="label">Category</label>
-          <select
-            value={categoryId ?? ""}
-            onChange={(e) => setCategoryId(e.target.value || null)}
-            className="input"
-          >
-            <option value="">Other</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+          {addingCat ? (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Category name"
+                value={newCatName}
+                onChange={(e) => setNewCatName(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") handleCreateCategory(); if (e.key === "Escape") setAddingCat(false); }}
+                className="input flex-1"
+                autoFocus
+              />
+              <button onClick={handleCreateCategory} className="btn-primary px-3">Add</button>
+              <button onClick={() => setAddingCat(false)} className="btn-secondary px-3">Cancel</button>
+            </div>
+          ) : (
+            <select
+              value={categoryId ?? ""}
+              onChange={(e) => {
+                if (e.target.value === "__new__") { setAddingCat(true); }
+                else { setCategoryId(e.target.value || null); }
+              }}
+              className="input"
+            >
+              <option value="">Other</option>
+              {categories.filter((cat) => cat.id !== "other").map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+              <option value="__new__">+ New category</option>
+            </select>
+          )}
         </div>
 
         <div>

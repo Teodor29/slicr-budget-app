@@ -24,7 +24,7 @@ interface BudgetCtx {
   addTransaction: (t: Omit<Transaction, "id">) => void;
   updateTransaction: (t: Transaction) => void;
   deleteTransaction: (id: string) => void;
-  addCategory: (cat: Omit<Category, "id">) => void;
+  addCategory: (cat: Omit<Category, "id">) => string;
   updateCategory: (cat: Category) => void;
   deleteCategory: (id: string) => void;
   setIncome: (amount: number) => void;
@@ -108,7 +108,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
     updateViewedTransactions((txs) => txs.filter((tx) => tx.id !== id));
   }
 
-  function addCategory(cat: Omit<Category, "id">) {
+  function addCategory(cat: Omit<Category, "id">): string {
     const newCat = { ...cat, id: crypto.randomUUID() };
     const curMonth = data.months[viewedMonth];
     save({
@@ -118,6 +118,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         ? { ...data.months, [viewedMonth]: { ...curMonth, categories: [...curMonth.categories, newCat] } }
         : data.months,
     });
+    return newCat.id;
   }
 
   function updateCategory(cat: Category) {
