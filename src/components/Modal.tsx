@@ -9,11 +9,11 @@ interface Props {
 export default function Modal({ title, onClose, children }: Props) {
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-20"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-20 p-4"
       onClick={onClose}
     >
       <div
-        className="bg-surface rounded-t-2xl sm:rounded-card p-6 w-full sm:max-w-md"
+        className="bg-surface rounded-card p-6 w-full max-w-md max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-xl font-bold text-fg mb-5">{title}</h2>
