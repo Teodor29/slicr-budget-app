@@ -17,8 +17,8 @@ interface BudgetCtx {
   data: AppData;
   viewedMonth: string;
   setViewedMonth: (m: string) => void;
-  ensureMonthExists: (monthKey: string) => void;
   pendingNewMonth: string | null;
+  promptMonth: (key: string) => void;
   confirmNewMonth: () => void;
   dismissNewMonth: () => void;
   addTransaction: (t: Omit<Transaction, "id">) => void;
@@ -80,18 +80,14 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
 
   function confirmNewMonth() {
     if (!pendingNewMonth) return;
+    const isRealCurrentMonth = pendingNewMonth === getCurrentMonthKey();
     save({
       ...data,
       months: { ...data.months, [pendingNewMonth]: buildMonth(data.template) },
-      currentMonth: pendingNewMonth,
+      ...(isRealCurrentMonth ? { currentMonth: pendingNewMonth } : {}),
     });
     setViewedMonth(pendingNewMonth);
     setPendingNewMonth(null);
-  }
-
-  function ensureMonthExists(monthKey: string) {
-    if (data.months[monthKey]) return;
-    save({ ...data, months: { ...data.months, [monthKey]: buildMonth(data.template) } });
   }
 
   function addTransaction(t: Omit<Transaction, "id">) {
@@ -108,18 +104,18 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
 
   function addCategory(cat: Omit<Category, "id">) {
     const newCat = { ...cat, id: crypto.randomUUID() };
-    const curMonth = data.months[data.currentMonth];
+    const curMonth = data.months[viewedMonth];
     save({
       ...data,
       template: { ...data.template, categories: [...data.template.categories, newCat] },
       months: curMonth
-        ? { ...data.months, [data.currentMonth]: { ...curMonth, categories: [...curMonth.categories, newCat] } }
+        ? { ...data.months, [viewedMonth]: { ...curMonth, categories: [...curMonth.categories, newCat] } }
         : data.months,
     });
   }
 
   function updateCategory(cat: Category) {
-    const curMonth = data.months[data.currentMonth];
+    const curMonth = data.months[viewedMonth];
     save({
       ...data,
       template: {
@@ -129,7 +125,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
       months: curMonth
         ? {
             ...data.months,
-            [data.currentMonth]: {
+            [viewedMonth]: {
               ...curMonth,
               categories: curMonth.categories.map((c) => (c.id === cat.id ? cat : c)),
             },
@@ -140,7 +136,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
 
   function deleteCategory(id: string) {
     if (id === "other") return;
-    const curMonth = data.months[data.currentMonth];
+    const curMonth = data.months[viewedMonth];
     save({
       ...data,
       template: {
@@ -150,7 +146,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
       months: curMonth
         ? {
             ...data.months,
-            [data.currentMonth]: {
+            [viewedMonth]: {
               ...curMonth,
               categories: curMonth.categories.filter((c) => c.id !== id),
               transactions: curMonth.transactions.map((t) =>
@@ -163,12 +159,12 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
   }
 
   function setIncome(amount: number) {
-    const curMonth = data.months[data.currentMonth];
+    const curMonth = data.months[viewedMonth];
     save({
       ...data,
       template: { ...data.template, income: amount },
       months: curMonth
-        ? { ...data.months, [data.currentMonth]: { ...curMonth, income: amount } }
+        ? { ...data.months, [viewedMonth]: { ...curMonth, income: amount } }
         : data.months,
     });
   }
@@ -179,8 +175,8 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         data,
         viewedMonth,
         setViewedMonth,
-        ensureMonthExists,
         pendingNewMonth,
+        promptMonth: setPendingNewMonth,
         confirmNewMonth,
         dismissNewMonth: () => setPendingNewMonth(null),
         addTransaction,

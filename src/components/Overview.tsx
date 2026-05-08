@@ -26,7 +26,7 @@ function spentForCategory(
 }
 
 export default function Overview() {
-  const { data, viewedMonth, setViewedMonth, ensureMonthExists } = useBudget();
+  const { data, viewedMonth, setViewedMonth, promptMonth } = useBudget();
 
   const monthKeys = Object.keys(data.months).sort();
   const idx = monthKeys.indexOf(viewedMonth);
@@ -47,9 +47,7 @@ export default function Overview() {
     if (idx < monthKeys.length - 1) {
       setViewedMonth(monthKeys[idx + 1]);
     } else {
-      const next = addMonths(viewedMonth, 1);
-      ensureMonthExists(next);
-      setViewedMonth(next);
+      promptMonth(addMonths(viewedMonth, 1));
     }
   }
 
