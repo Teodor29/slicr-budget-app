@@ -76,6 +76,10 @@
   .error-msg {
     @apply text-danger text-xs mt-1;
   }
+
+  .tag {
+    @apply px-2 py-0.5 rounded-full text-xs border border-border text-primary hover:border-primary  transition-colors cursor-pointer;
+  }
 }
 
 @layer base {
