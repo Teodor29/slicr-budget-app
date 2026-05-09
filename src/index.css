@@ -78,7 +78,7 @@
   }
 
   .tag {
-    @apply px-2 py-1 rounded-full text-xs border border-border text-primary hover:border-primary  transition-colors cursor-pointer;
+    @apply px-2 py-1 rounded-full text-xs border border-border text-fg-muted hover:border-primary  transition-colors cursor-pointer;
   }
 }
 
