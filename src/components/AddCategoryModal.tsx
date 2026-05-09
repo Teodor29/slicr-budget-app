@@ -68,7 +68,7 @@ export default function AddCategoryModal({ onClose }: Props) {
             autoFocus
           />
           {suggestions.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-2">
+            <div className="flex flex-wrap gap-1.5 mt-1.5">
               {suggestions.map((s) => (
                 <button
                   key={s}

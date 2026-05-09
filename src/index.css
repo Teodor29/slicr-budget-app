@@ -34,43 +34,43 @@
 
 @layer components {
   .card {
-    @apply bg-surface rounded-card p-5;
+    @apply bg-surface rounded-card p-4;
   }
 
   .label {
-    @apply text-sm font-medium text-fg-muted block mb-1.5;
+    @apply text-sm font-medium text-fg-muted block mb-1;
   }
 
   .input {
-    @apply w-full bg-surface border border-border rounded-input px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary;
+    @apply w-full bg-surface border border-border rounded-input px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-primary;
   }
 
   .btn-primary {
-    @apply py-3 rounded-input bg-primary text-white font-semibold active:bg-primary-hover hover:bg-primary-hover;
+    @apply px-4 py-2 rounded-input bg-primary text-white font-semibold active:bg-primary-hover hover:bg-primary-hover;
   }
 
   .btn-secondary {
-    @apply py-3 rounded-input border border-border text-fg-muted font-medium active:bg-subtle hover:bg-subtle;
+    @apply px-4 py-2 rounded-input border border-border text-fg-muted font-medium active:bg-subtle hover:bg-subtle;
   }
 
   .btn-sm-primary {
-    @apply py-2 px-3 rounded-input bg-primary text-white text-sm font-semibold active:bg-primary-hover hover:bg-primary-hover;
+    @apply px-3 py-1.5 rounded-input bg-primary text-white text-sm font-semibold active:bg-primary-hover hover:bg-primary-hover;
   }
 
   .btn-sm-secondary {
-    @apply py-2 px-3 rounded-input border border-border text-fg-muted text-sm font-medium active:bg-subtle hover:bg-subtle;
+    @apply  px-3 py-1.5 rounded-input border border-border text-fg-muted text-sm font-medium active:bg-subtle hover:bg-subtle;
   }
 
   .btn-danger {
-    @apply w-full mt-3 py-3 rounded-input border border-danger text-danger font-medium;
+    @apply w-full mt-3 px-4 py-2 rounded-input border border-danger text-danger font-medium;
   }
 
   .form-stack {
-    @apply flex flex-col gap-4;
+    @apply flex flex-col gap-3;
   }
 
   .modal-actions {
-    @apply flex gap-3 mt-6;
+    @apply flex gap-2 mt-3;
   }
 
   .error-msg {

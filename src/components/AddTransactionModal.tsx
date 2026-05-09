@@ -90,8 +90,8 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
                 className="input flex-1"
                 autoFocus
               />
-              <button onClick={handleCreateCategory} className="btn-primary px-3">Add</button>
-              <button onClick={() => setAddingCat(false)} className="btn-secondary px-3">Cancel</button>
+              <button onClick={handleCreateCategory} className="btn-primary">Add</button>
+              <button onClick={() => setAddingCat(false)} className="btn-secondary">Cancel</button>
             </div>
           ) : (
             <select

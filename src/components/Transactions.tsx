@@ -57,26 +57,28 @@ export default function Transactions() {
               <h3 className="text-sm font-semibold-muted px-4 mb-2">
                 {formatDate(date)}
               </h3>
-              <div className="bg-surface px-5 py-2 rounded-card shadow-sm">
-                <div className="flex flex-col divide-y divide-border">
-                  {txs.map((tx) => (
-                    <div
-                      key={tx.id}
-                      onClick={() => setEditTx(tx)}
-                      className="flex items-center py-3 cursor-pointer"
-                    >
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">
-                          {getCategoryName(tx.categoryId)}
-                        </p>
-                        <p className="text-xs-muted mt-0.5">{tx.description}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {tx.recurring && <MdRepeat className="w-4 h-4-muted" />}
-                        <span className="text-sm font-medium">
-                          {tx.amount.toLocaleString("en")} {currency}
-                        </span>
-                        <MdEdit className="w-4 h-4-muted" />
+              <div className="bg-surface rounded-card shadow-sm">
+                <div className="flex flex-col">
+                  {txs.map((tx, i) => (
+                    <div key={tx.id}>
+                      {i > 0 && <div className="h-px bg-border mx-4" />}
+                      <div
+                        onClick={() => setEditTx(tx)}
+                        className="flex items-center p-4 cursor-pointer"
+                      >
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">
+                            {getCategoryName(tx.categoryId)}
+                          </p>
+                          <p className="text-xs-muted mt-0.5">{tx.description}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {tx.recurring && <MdRepeat className="w-4 h-4-muted" />}
+                          <span className="text-sm font-medium">
+                            {tx.amount.toLocaleString("en")} {currency}
+                          </span>
+                          <MdEdit className="w-4 h-4-muted" />
+                        </div>
                       </div>
                     </div>
                   ))}

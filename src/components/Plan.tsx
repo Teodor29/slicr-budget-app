@@ -36,7 +36,7 @@ export default function Plan() {
   const overBudget = remainingToBudget < 0;
 
   return (
-    <div className="flex flex-col gap-6 md:border-t md:border-border pt-6">
+    <div className="flex flex-col gap-4 md:border-t md:border-border pt-6">
       <h2 className="hidden md:block">Plan</h2>
       <div className="card">
         <p className="mb-1">Remaining to budget</p>
@@ -87,7 +87,7 @@ export default function Plan() {
           {template.categories.map((cat) => (
             <div
               key={cat.id}
-              className="flex items-center cursor-pointer py-3"
+              className="flex items-center cursor-pointer py-2"
               onClick={() => {
                 setEditingCat(cat);
                 setFocusField("name");
@@ -115,7 +115,7 @@ export default function Plan() {
 
         <button
           onClick={() => setShowAddCategory(true)}
-          className="w-full mt-5 py-3 rounded-input border-2 border-dashed border-border text-sm font-medium-muted active:bg-subtle"
+          className="w-full mt-4 py-3 rounded-input border-2 border-dashed border-border text-sm font-medium-muted active:bg-subtle"
         >
           + Add category
         </button>
