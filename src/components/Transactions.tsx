@@ -41,7 +41,7 @@ export default function Transactions() {
         <h2 className="hidden md:block">Transactions</h2>
         <button
           onClick={() => setShowAdd(true)}
-          className="hidden md:flex items-center gap-1.5 btn-sm-primary"
+          className="hidden md:flex items-center gap-1.5 btn-primary btn-sm"
         >
           <MdAdd className="w-4 h-4" />
           Add
@@ -64,7 +64,7 @@ export default function Transactions() {
                       {i > 0 && <div className="h-px bg-border mx-4" />}
                       <div
                         onClick={() => setEditTx(tx)}
-                        className="flex items-center p-4 cursor-pointer"
+                        className="flex items-center px-4 py-3 cursor-pointer"
                       >
                         <div className="flex-1">
                           <p className="text-sm font-medium">

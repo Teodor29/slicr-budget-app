@@ -38,39 +38,41 @@
   }
 
   .label {
-    @apply text-sm font-medium text-fg-muted block mb-1;
+    @apply text-sm font-medium text-fg-muted block mb-1.5;
   }
 
   .input {
-    @apply w-full bg-surface border border-border rounded-input px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-primary;
+    @apply w-full bg-surface border border-border rounded-input px-4 py-3 min-h-[44px] text-base focus:outline-none focus:ring-2 ring-inset focus:ring-primary;
   }
 
   .btn-primary {
-    @apply px-4 py-2 rounded-input bg-primary text-white font-semibold active:bg-primary-hover hover:bg-primary-hover;
+    @apply inline-flex items-center justify-center px-4 py-3 min-h-[44px] rounded-input
+           bg-primary text-white font-semibold select-none
+           transition-colors active:bg-primary-hover hover:bg-primary-hover;
   }
 
   .btn-secondary {
-    @apply px-4 py-2 rounded-input border border-border text-fg-muted font-medium active:bg-subtle hover:bg-subtle;
-  }
-
-  .btn-sm-primary {
-    @apply px-3 py-1.5 rounded-input bg-primary text-white text-sm font-semibold active:bg-primary-hover hover:bg-primary-hover;
-  }
-
-  .btn-sm-secondary {
-    @apply  px-3 py-1.5 rounded-input border border-border text-fg-muted text-sm font-medium active:bg-subtle hover:bg-subtle;
+    @apply inline-flex items-center justify-center px-4 py-3 min-h-[44px] rounded-input
+           border border-border text-fg-muted font-medium select-none
+           transition-colors active:bg-subtle hover:bg-subtle;
   }
 
   .btn-danger {
-    @apply w-full mt-3 px-4 py-2 rounded-input border border-danger text-danger font-medium;
+    @apply inline-flex items-center justify-center w-full mt-3 px-4 py-3 min-h-[44px] rounded-input
+           border border-danger text-danger font-medium select-none
+           transition-colors active:opacity-70;
+  }
+
+  .btn-sm {
+    @apply px-3 py-2 text-sm;
   }
 
   .form-stack {
-    @apply flex flex-col gap-3;
+    @apply flex flex-col gap-4;
   }
 
   .modal-actions {
-    @apply flex gap-2 mt-3;
+    @apply flex gap-2 mt-4;
   }
 
   .error-msg {
@@ -78,13 +80,13 @@
   }
 
   .tag {
-    @apply px-2 py-1 rounded-full text-xs border border-border text-fg-muted hover:border-primary  transition-colors cursor-pointer;
+    @apply shrink-0 whitespace-nowrap px-3 py-2 rounded-full text-xs border border-border text-fg-muted hover:border-primary transition-colors cursor-pointer;
   }
 }
 
 @layer base {
   button {
-    cursor: pointer;
+    @apply cursor-pointer touch-manipulation;
   }
 
   html,

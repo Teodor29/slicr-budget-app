@@ -68,7 +68,8 @@ export default function AddCategoryModal({ onClose }: Props) {
             autoFocus
           />
           {suggestions.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-1.5">
+            <div className="relative mt-2">
+              <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {suggestions.map((s) => (
                 <button
                   key={s}
@@ -82,6 +83,8 @@ export default function AddCategoryModal({ onClose }: Props) {
                   {s}
                 </button>
               ))}
+              </div>
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-surface to-transparent" />
             </div>
           )}
         </div>
