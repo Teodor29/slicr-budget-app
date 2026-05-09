@@ -45,10 +45,6 @@ export default function Overview() {
   const remaining = income - totalSpent;
   const spentPct = income > 0 ? Math.min((totalSpent / income) * 100, 100) : 0;
   const overBudget = remaining < 0;
-  const totalBudgeted = month.categories.reduce(
-    (sum, cat) => sum + cat.budget,
-    0,
-  );
 
   function goNext() {
     if (idx < monthKeys.length - 1) {
