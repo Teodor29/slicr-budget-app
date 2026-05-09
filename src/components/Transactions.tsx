@@ -41,7 +41,7 @@ export default function Transactions() {
         <h2 className="hidden md:block">Transactions</h2>
         <button
           onClick={() => setShowAdd(true)}
-          className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-input bg-primary text-white text-sm font-semibold active:bg-primary-hover"
+          className="hidden md:flex items-center gap-1.5 btn-sm-primary"
         >
           <MdAdd className="w-4 h-4" />
           Add

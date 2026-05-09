@@ -46,11 +46,19 @@
   }
 
   .btn-primary {
-    @apply py-3 rounded-input bg-primary text-white font-semibold active:bg-primary-hover;
+    @apply py-3 rounded-input bg-primary text-white font-semibold active:bg-primary-hover hover:bg-primary-hover;
   }
 
   .btn-secondary {
-    @apply py-3 rounded-input border border-border text-fg-muted font-medium active:bg-subtle;
+    @apply py-3 rounded-input border border-border text-fg-muted font-medium active:bg-subtle hover:bg-subtle;
+  }
+
+  .btn-sm-primary {
+    @apply py-2 px-3 rounded-input bg-primary text-white text-sm font-semibold active:bg-primary-hover hover:bg-primary-hover;
+  }
+
+  .btn-sm-secondary {
+    @apply py-2 px-3 rounded-input border border-border text-fg-muted text-sm font-medium active:bg-subtle hover:bg-subtle;
   }
 
   .btn-danger {

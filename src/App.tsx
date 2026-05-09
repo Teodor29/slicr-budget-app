@@ -38,7 +38,7 @@ function AppInner() {
         {showFab && (
           <button
             onClick={() => setShowAdd(true)}
-            className="fixed bottom-20 right-4 z-20 w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center active:bg-primary-hover"
+            className="fixed bottom-20 right-4 z-20 w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center active:bg-primary-hover hover:bg-primary-hover"
           >
             <MdAdd className="w-7 h-7" />
           </button>
