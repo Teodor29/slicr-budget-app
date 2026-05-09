@@ -49,7 +49,7 @@ export default function Transactions() {
       </div>
 
       {sorted.length === 0 ? (
-        <p className="text-center-muted py-10">No transactions yet.</p>
+        <p className="text-center py-10">No transactions yet.</p>
       ) : (
         <div className="form-stack">
           {groups.map(({ date, txs }) => (

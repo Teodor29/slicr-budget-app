@@ -1,13 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --color-page: oklch(90% 0 0);
-  --color-surface: oklch(95% 0 0);
-  --color-subtle: oklch(100% 0 0);
-  --color-border: oklch(85% 0 0);
-  --color-fg: oklch(20% 0 0);
-  --color-fg-muted: oklch(50% 0 0);
+  --color-page: oklch(90% 0 265);
+  --color-surface: oklch(95% 0 265);
+  --color-subtle: oklch(100% 0 265);
+  --color-border: oklch(85% 0 265);
+  --color-fg: oklch(10% 0.008 265);
+  --color-fg-muted: oklch(35% 0.01 265);
   --color-primary: oklch(53% 0.22 264);
   --color-primary-hover: oklch(47% 0.22 264);
   --color-danger: oklch(55% 0.22 27);
@@ -20,21 +20,21 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-page: oklch(15% 0 0);
-    --color-surface: oklch(20% 0 0);
-    --color-subtle: oklch(25% 0 0);
-    --color-border: oklch(30% 0.012 265);
-    --color-fg: oklch(98% 0 0);
-    --color-fg-muted: oklch(70% 0.012 265);
+    --color-page: oklch(15% 0.01 265);
+    --color-surface: oklch(20% 0.01 265);
+    --color-subtle: oklch(25% 0.01 265);
+    --color-border: oklch(30% 0.01 265);
+    --color-fg: oklch(90% 0.01 265);
+    --color-fg-muted: oklch(65% 0.012 265);
     --color-primary: oklch(62% 0.22 264);
-    --color-primary-hover: oklch(57% 0.22 264);
-    --color-danger: oklch(0.7 0.16 27);
+    --color-primary-hover: oklch(68% 0.22 264);
+    --color-danger: oklch(70% 0.16 27);
   }
 }
 
 @layer components {
   .card {
-    @apply bg-surface rounded-card p-5 shadow-sm;
+    @apply bg-surface rounded-card p-5;
   }
 
   .label {

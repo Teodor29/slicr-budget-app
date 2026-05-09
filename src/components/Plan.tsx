@@ -39,9 +39,9 @@ export default function Plan() {
     <div className="flex flex-col gap-6 md:border-t md:border-border pt-6">
       <h2 className="hidden md:block">Plan</h2>
       <div className="card">
-        <p className="text-sm-muted mb-1">Remaining to budget</p>
+        <p className="mb-1">Remaining to budget</p>
         <p
-          className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}
+          className={`text-4xl font-bold mb-3 ${overBudget && "text-danger"}`}
         >
           {fmt(remainingToBudget)} {currency}
         </p>
@@ -52,7 +52,7 @@ export default function Plan() {
       </div>
 
       <div className="card">
-        <h3 className="text-base font-semibold mb-3">Monthly income</h3>
+        <h4 className="mb-3">Monthly income</h4>
         <div className="flex gap-2 items-center">
           <div
             className="flex flex-1 items-center justify-between cursor-pointer bg-subtle rounded-input px-3 py-2"
@@ -78,7 +78,7 @@ export default function Plan() {
       </div>
 
       <div className="card">
-        <h3 className="text-base font-semibold mb-3">Categories</h3>
+        <h4 className="mb-3">Categories</h4>
         {template.categories.length === 0 && (
           <p className="text-sm-muted mb-4">No categories yet.</p>
         )}

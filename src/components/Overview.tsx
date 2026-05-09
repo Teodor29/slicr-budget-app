@@ -22,12 +22,15 @@ function spentForCategory(
   catId: string,
 ) {
   return transactions
-    .filter((t) => t.categoryId === catId || (catId === "other" && !t.categoryId))
+    .filter(
+      (t) => t.categoryId === catId || (catId === "other" && !t.categoryId),
+    )
     .reduce((sum, t) => sum + t.amount, 0);
 }
 
 export default function Overview() {
-  const { data, viewedMonth, setViewedMonth, promptMonth, currency } = useBudget();
+  const { data, viewedMonth, setViewedMonth, promptMonth, currency } =
+    useBudget();
 
   const monthKeys = Object.keys(data.months).sort();
   const idx = monthKeys.indexOf(viewedMonth);
@@ -42,7 +45,10 @@ export default function Overview() {
   const remaining = income - totalSpent;
   const spentPct = income > 0 ? Math.min((totalSpent / income) * 100, 100) : 0;
   const overBudget = remaining < 0;
-  const totalBudgeted = month.categories.reduce((sum, cat) => sum + cat.budget, 0);
+  const totalBudgeted = month.categories.reduce(
+    (sum, cat) => sum + cat.budget,
+    0,
+  );
 
   function goNext() {
     if (idx < monthKeys.length - 1) {
@@ -74,8 +80,8 @@ export default function Overview() {
       </div>
 
       <div className="card">
-        <p className="text-sm-muted mb-1">Remaining</p>
-        <p className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}>
+        <p className="mb-1">Remaining</p>
+        <p className={`text-4xl font-bold mb-3 ${overBudget && "text-danger"}`}>
           {fmt(remaining)} {currency}
         </p>
         <ProgressBar pct={spentPct} danger={overBudget} />
@@ -87,19 +93,21 @@ export default function Overview() {
       {month.categories.length > 0 && (
         <div className="card">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-base font-semibold">Total Budgeted</h3>
-            <span className="font-medium-muted">{fmt(totalBudgeted)} {currency}</span>
+            <h3>Total Budgeted</h3>
           </div>
           <div className="form-stack">
             {month.categories.map((cat) => {
               const spent = spentForCategory(month.transactions, cat.id);
-              const pct = cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0;
+              const pct =
+                cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0;
               const over = spent > cat.budget;
               return (
                 <div key={cat.id}>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-medium">{cat.name}</span>
-                    <span className={`text-sm font-medium ${over ? "text-danger" : "text-fg-muted"}`}>
+                    <span
+                      className={`text-sm font-medium ${over ? "text-danger" : "text-fg-muted"}`}
+                    >
                       {fmt(spent)} / {fmt(cat.budget)} {currency}
                     </span>
                   </div>
