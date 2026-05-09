@@ -9,7 +9,7 @@ interface Props {
 export default function Modal({ title, onClose, children }: Props) {
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-20 p-4"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-30 p-4"
       onClick={onClose}
     >
       <div

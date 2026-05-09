@@ -6,6 +6,7 @@ import EditCategoryModal from "./EditCategoryModal";
 import EditIncomeModal from "./EditIncomeModal";
 import { MdEdit } from "react-icons/md";
 import { fmt } from "../lib/format";
+import ProgressBar from "./ProgressBar";
 
 export default function Plan() {
   const {
@@ -44,12 +45,7 @@ export default function Plan() {
         >
           {fmt(remainingToBudget)} {currency}
         </p>
-        <div className="w-full bg-border rounded-full h-2.5 overflow-hidden">
-          <div
-            className={`h-2.5 rounded-full transition-all ${overBudget ? "bg-danger" : "bg-primary"}`}
-            style={{ width: `${budgetedPct}%` }}
-          />
-        </div>
+        <ProgressBar pct={budgetedPct} danger={overBudget} />
         <p className="text-xs-muted mt-1.5">
           {fmt(totalBudgeted)} of {fmt(template.income)} {currency} budgeted
         </p>
@@ -119,7 +115,7 @@ export default function Plan() {
 
         <button
           onClick={() => setShowAddCategory(true)}
-          className="w-full mt-3 py-3 rounded-input border-2 border-dashed border-border text-sm font-medium-muted active:bg-subtle"
+          className="w-full mt-5 py-3 rounded-input border-2 border-dashed border-border text-sm font-medium-muted active:bg-subtle"
         >
           + Add category
         </button>

@@ -1,6 +1,7 @@
 import { useBudget } from "../context/BudgetContext";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { fmt } from "../lib/format";
+import ProgressBar from "./ProgressBar";
 
 function monthLabel(key: string) {
   const [year, month] = key.split("-");
@@ -77,12 +78,7 @@ export default function Overview() {
         <p className={`text-4xl font-bold mb-3 ${overBudget ? "text-danger" : "text-fg"}`}>
           {fmt(remaining)} {currency}
         </p>
-        <div className="w-full bg-border rounded-full h-2.5 overflow-hidden">
-          <div
-            className={`h-2.5 rounded-full transition-all ${overBudget ? "bg-danger" : "bg-primary"}`}
-            style={{ width: `${spentPct}%` }}
-          />
-        </div>
+        <ProgressBar pct={spentPct} danger={overBudget} />
         <p className="text-xs-muted mt-1.5">
           {fmt(totalSpent)} of {fmt(income)} {currency} spent
         </p>
@@ -107,12 +103,7 @@ export default function Overview() {
                       {fmt(spent)} / {fmt(cat.budget)} {currency}
                     </span>
                   </div>
-                  <div className="w-full bg-border rounded-full h-2 overflow-hidden">
-                    <div
-                      className={`h-2 rounded-full transition-all ${over ? "bg-danger" : "bg-primary"}`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
+                  <ProgressBar pct={pct} danger={over} size="sm" />
                 </div>
               );
             })}
