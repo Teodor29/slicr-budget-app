@@ -1,14 +1,14 @@
-import { useState } from "react";
-import type { Category } from "../types";
-import Modal from "./Modal";
-import { useBudget } from "../context/BudgetContext";
+import { useState } from 'react'
+import type { Category } from '../types'
+import Modal from './Modal'
+import { useBudget } from '../context/BudgetContext'
 
 interface Props {
-  category: Category;
-  onClose: () => void;
-  onSave: (cat: Category) => void;
-  onDelete: (id: string) => void;
-  canDelete: boolean;
+  category: Category
+  onClose: () => void
+  onSave: (cat: Category) => void
+  onDelete: (id: string) => void
+  canDelete: boolean
 }
 
 export default function EditCategoryModal({
@@ -18,17 +18,23 @@ export default function EditCategoryModal({
   onDelete,
   canDelete,
 }: Props) {
-  const { currency } = useBudget();
-  const [name, setName] = useState(category.name);
-  const [budget, setBudget] = useState(String(category.budget));
-  const [error, setError] = useState("");
+  const { currency } = useBudget()
+  const [name, setName] = useState(category.name)
+  const [budget, setBudget] = useState(String(category.budget))
+  const [error, setError] = useState('')
 
   function handleSave() {
-    const parsed = parseFloat(budget);
-    if (!name.trim()) { setError("Enter a name"); return; }
-    if (!budget || isNaN(parsed) || parsed < 0) { setError("Enter a valid budget"); return; }
-    onSave({ ...category, name: name.trim(), budget: parsed });
-    onClose();
+    if (!name.trim()) {
+      setError('Enter a name')
+      return
+    }
+    const parsed = parseFloat(budget)
+    if (!budget || isNaN(parsed) || parsed < 0) {
+      setError('Enter a valid budget')
+      return
+    }
+    onSave({ ...category, name: name.trim(), budget: parsed })
+    onClose()
   }
 
   return (
@@ -40,7 +46,10 @@ export default function EditCategoryModal({
             type="text"
             placeholder="Category name"
             value={name}
-            onChange={(e) => { setName(e.target.value); setError(""); }}
+            onChange={(e) => {
+              setName(e.target.value)
+              setError('')
+            }}
             className="input"
           />
         </div>
@@ -51,7 +60,10 @@ export default function EditCategoryModal({
             inputMode="decimal"
             placeholder="0"
             value={budget}
-            onChange={(e) => { setBudget(e.target.value); setError(""); }}
+            onChange={(e) => {
+              setBudget(e.target.value)
+              setError('')
+            }}
             className="input"
           />
           {error && <p className="error-msg">{error}</p>}
@@ -59,28 +71,25 @@ export default function EditCategoryModal({
       </div>
 
       <div className="modal-actions">
-        <button
-          onClick={onClose}
-          className="flex-1 btn-secondary"
-        >
+        <button onClick={onClose} className="flex-1 btn-secondary">
           Cancel
         </button>
-        <button
-          onClick={handleSave}
-          className="flex-1 btn-primary"
-        >
+        <button onClick={handleSave} className="flex-1 btn-primary">
           Save
         </button>
       </div>
 
       {canDelete && (
         <button
-          onClick={() => { onDelete(category.id); onClose(); }}
+          onClick={() => {
+            onDelete(category.id)
+            onClose()
+          }}
           className="btn-danger"
         >
           Delete category
         </button>
       )}
     </Modal>
-  );
+  )
 }

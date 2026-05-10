@@ -1,38 +1,38 @@
-import { useState } from "react";
-import { useBudget } from "../context/BudgetContext";
-import type { Transaction } from "../types";
-import AddTransactionModal from "./AddTransactionModal";
-import { MdEdit, MdAdd, MdRepeat } from "react-icons/md";
+import { useState } from 'react'
+import { useBudget } from '../context/BudgetContext'
+import type { Transaction } from '../types'
+import AddTransactionModal from './AddTransactionModal'
+import { MdEdit, MdAdd, MdRepeat } from 'react-icons/md'
 
 export default function Transactions() {
-  const { data, viewedMonth, deleteTransaction, currency } = useBudget();
-  const month = data.months[viewedMonth];
-  const [editTx, setEditTx] = useState<Transaction | null>(null);
-  const [showAdd, setShowAdd] = useState(false);
+  const { data, viewedMonth, deleteTransaction, currency } = useBudget()
+  const month = data.months[viewedMonth]
+  const [editTx, setEditTx] = useState<Transaction | null>(null)
+  const [showAdd, setShowAdd] = useState(false)
 
   const sorted = [...(month?.transactions ?? [])].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
 
   // Group consecutive transactions by date (already sorted)
-  const groups: { date: string; txs: Transaction[] }[] = [];
+  const groups: { date: string; txs: Transaction[] }[] = []
   for (const tx of sorted) {
-    const last = groups[groups.length - 1];
-    if (last?.date === tx.date) last.txs.push(tx);
-    else groups.push({ date: tx.date, txs: [tx] });
+    const last = groups[groups.length - 1]
+    if (last?.date === tx.date) last.txs.push(tx)
+    else groups.push({ date: tx.date, txs: [tx] })
   }
 
   function getCategoryName(categoryId: string | null) {
-    if (!categoryId) return "Other";
-    return month?.categories.find((c) => c.id === categoryId)?.name ?? "Other";
+    if (!categoryId) return 'Other'
+    return month?.categories.find((c) => c.id === categoryId)?.name ?? 'Other'
   }
 
   function formatDate(dateStr: string) {
-    return new Date(dateStr + "T00:00:00").toLocaleDateString("en", {
-      weekday: "short",
-      day: "numeric",
-      month: "long",
-    });
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString('en', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'long',
+    })
   }
 
   return (
@@ -70,12 +70,16 @@ export default function Transactions() {
                           <p className="text-sm font-medium">
                             {getCategoryName(tx.categoryId)}
                           </p>
-                          <p className="text-xs-muted mt-0.5">{tx.description}</p>
+                          <p className="text-xs-muted mt-0.5">
+                            {tx.description}
+                          </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          {tx.recurring && <MdRepeat className="w-4 h-4-muted" />}
+                          {tx.recurring && (
+                            <MdRepeat className="w-4 h-4-muted" />
+                          )}
                           <span className="text-sm font-medium">
-                            {tx.amount.toLocaleString("en")} {currency}
+                            {tx.amount.toLocaleString('en')} {currency}
                           </span>
                           <MdEdit className="w-4 h-4-muted" />
                         </div>
@@ -98,5 +102,5 @@ export default function Transactions() {
         />
       )}
     </div>
-  );
+  )
 }

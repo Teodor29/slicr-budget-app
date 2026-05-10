@@ -1,9 +1,9 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react'
 
 interface Props {
-  title: string;
-  onClose: () => void;
-  children: ReactNode;
+  title: string
+  onClose: () => void
+  children: ReactNode
 }
 
 export default function Modal({ title, onClose, children }: Props) {
@@ -20,5 +20,5 @@ export default function Modal({ title, onClose, children }: Props) {
         {children}
       </div>
     </div>
-  );
+  )
 }

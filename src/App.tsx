@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { BudgetProvider } from "./context/BudgetContext";
-import Overview from "./components/Overview";
-import Plan from "./components/Plan";
-import Transactions from "./components/Transactions";
-import { MdAdd } from "react-icons/md";
-import AddTransactionModal from "./components/AddTransactionModal";
-import BottomNav from "./components/BottomNav";
-import NewMonthPrompt from "./components/NewMonthPrompt";
+import { useState } from 'react'
+import { BudgetProvider } from './context/BudgetContext'
+import Overview from './components/Overview'
+import Plan from './components/Plan'
+import Transactions from './components/Transactions'
+import { MdAdd } from 'react-icons/md'
+import AddTransactionModal from './components/AddTransactionModal'
+import BottomNav from './components/BottomNav'
+import NewMonthPrompt from './components/NewMonthPrompt'
 
-type View = "overview" | "transactions" | "plan";
+type View = 'overview' | 'transactions' | 'plan'
 
 function AppInner() {
-  const [view, setView] = useState<View>("overview");
-  const [showAdd, setShowAdd] = useState(false);
-  const showFab = view === "overview" || view === "transactions";
+  const [view, setView] = useState<View>('overview')
+  const [showAdd, setShowAdd] = useState(false)
+  const showFab = view === 'overview' || view === 'transactions'
 
   return (
     <div className="min-h-[100dvh] bg-page">
@@ -28,11 +28,11 @@ function AppInner() {
       <div className="md:hidden flex flex-col min-h-[100dvh]">
         <main
           className="flex-1 px-4 py-6"
-          style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}
+          style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))' }}
         >
-          {view === "overview" && <Overview />}
-          {view === "transactions" && <Transactions />}
-          {view === "plan" && <Plan />}
+          {view === 'overview' && <Overview />}
+          {view === 'transactions' && <Transactions />}
+          {view === 'plan' && <Plan />}
         </main>
 
         {showFab && (
@@ -50,7 +50,7 @@ function AppInner() {
       {showAdd && <AddTransactionModal onClose={() => setShowAdd(false)} />}
       <NewMonthPrompt />
     </div>
-  );
+  )
 }
 
 export default function App() {
@@ -58,5 +58,5 @@ export default function App() {
     <BudgetProvider>
       <AppInner />
     </BudgetProvider>
-  );
+  )
 }

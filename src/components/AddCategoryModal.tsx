@@ -1,51 +1,51 @@
-import { useState } from "react";
-import { useBudget } from "../context/BudgetContext";
-import Modal from "./Modal";
+import { useState } from 'react'
+import { useBudget } from '../context/BudgetContext'
+import Modal from './Modal'
 
 interface Props {
-  onClose: () => void;
+  onClose: () => void
 }
 
 const SUGGESTIONS = [
-  "Housing",
-  "Groceries",
-  "Transport",
-  "Shopping",
-  "Health",
-  "Entertainment",
-  "Bills",
-  "Savings",
-  "Dining Out",
-  "Subscriptions",
-  "Travel",
-  "Pets"
-];
+  'Housing',
+  'Groceries',
+  'Transport',
+  'Shopping',
+  'Health',
+  'Entertainment',
+  'Bills',
+  'Savings',
+  'Dining Out',
+  'Subscriptions',
+  'Travel',
+  'Pets',
+]
 
 export default function AddCategoryModal({ onClose }: Props) {
-  const { addCategory, currency, data } = useBudget();
-  const [name, setName] = useState("");
-  const [budget, setBudget] = useState("");
-  const [error, setError] = useState("");
+  const { addCategory, currency, data } = useBudget()
+  const [name, setName] = useState('')
+  const [budget, setBudget] = useState('')
+  const [error, setError] = useState('')
 
   const existingNames = new Set(
-    data.template.categories.map((c) => c.name.toLowerCase()),
-  );
+    data.template.categories.map((c) => c.name.toLowerCase())
+  )
   const suggestions = SUGGESTIONS.filter(
-    (s) => !existingNames.has(s.toLowerCase()),
-  );
+    (s) => !existingNames.has(s.toLowerCase())
+  )
 
   function handleSave() {
     if (!name.trim()) {
-      setError("Enter a name");
-      return;
+      setError('Enter a name')
+      return
     }
-    const parsed = budget === "" ? 0 : parseFloat(budget);
+    const parsed = budget === '' ? 0 : parseFloat(budget)
     if (isNaN(parsed) || parsed < 0) {
-      setError("Enter a valid budget");
-      return;
+      setError('Enter a valid budget')
+      return
     }
-    addCategory({ name: name.trim(), budget: parsed });
-    onClose();
+    addCategory({ name: name.trim(), budget: parsed })
+    onClose()
   }
 
   return (
@@ -58,11 +58,11 @@ export default function AddCategoryModal({ onClose }: Props) {
             placeholder="e.g. Food, Rent, Gym"
             value={name}
             onChange={(e) => {
-              setName(e.target.value);
-              setError("");
+              setName(e.target.value)
+              setError('')
             }}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSave();
+              if (e.key === 'Enter') handleSave()
             }}
             className="input"
             autoFocus
@@ -75,8 +75,8 @@ export default function AddCategoryModal({ onClose }: Props) {
                     key={s}
                     type="button"
                     onClick={() => {
-                      setName(s);
-                      setError("");
+                      setName(s)
+                      setError('')
                     }}
                     className="tag"
                   >
@@ -96,11 +96,11 @@ export default function AddCategoryModal({ onClose }: Props) {
             placeholder="0"
             value={budget}
             onChange={(e) => {
-              setBudget(e.target.value);
-              setError("");
+              setBudget(e.target.value)
+              setError('')
             }}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSave();
+              if (e.key === 'Enter') handleSave()
             }}
             className="input"
           />
@@ -117,5 +117,5 @@ export default function AddCategoryModal({ onClose }: Props) {
         </button>
       </div>
     </Modal>
-  );
+  )
 }
