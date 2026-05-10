@@ -60,6 +60,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
             placeholder="0"
             value={amount}
             onChange={(e) => { setAmount(e.target.value); setError(""); }}
+            onKeyDown={(e) => { if (e.key === "Enter") handleSave(); }}
             className="input"
             autoFocus={!editTransaction}
           />
@@ -73,6 +74,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
             placeholder="What was it for?"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") handleSave(); }}
             className="input"
           />
         </div>

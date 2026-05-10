@@ -64,7 +64,7 @@ export default function Transactions() {
                       {i > 0 && <div className="h-px bg-border mx-4" />}
                       <div
                         onClick={() => setEditTx(tx)}
-                        className="flex items-center px-4 py-3 cursor-pointer"
+                        className="flex items-center px-4 py-3.5 cursor-pointer"
                       >
                         <div className="flex-1">
                           <p className="text-sm font-medium">
