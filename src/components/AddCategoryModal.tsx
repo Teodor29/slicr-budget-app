@@ -35,12 +35,12 @@ export default function AddCategoryModal({ onClose }: Props) {
   );
 
   function handleSave() {
-    const parsed = parseFloat(budget);
     if (!name.trim()) {
       setError("Enter a name");
       return;
     }
-    if (!budget || isNaN(parsed) || parsed < 0) {
+    const parsed = budget === "" ? 0 : parseFloat(budget);
+    if (isNaN(parsed) || parsed < 0) {
       setError("Enter a valid budget");
       return;
     }
