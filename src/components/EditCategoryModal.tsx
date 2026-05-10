@@ -9,7 +9,6 @@ interface Props {
   onSave: (cat: Category) => void;
   onDelete: (id: string) => void;
   canDelete: boolean;
-  focusField?: "name" | "budget" | null;
 }
 
 export default function EditCategoryModal({
@@ -18,7 +17,6 @@ export default function EditCategoryModal({
   onSave,
   onDelete,
   canDelete,
-  focusField,
 }: Props) {
   const { currency } = useBudget();
   const [name, setName] = useState(category.name);
@@ -44,7 +42,6 @@ export default function EditCategoryModal({
             value={name}
             onChange={(e) => { setName(e.target.value); setError(""); }}
             className="input"
-            autoFocus={focusField !== "budget"}
           />
         </div>
         <div>
@@ -56,7 +53,6 @@ export default function EditCategoryModal({
             value={budget}
             onChange={(e) => { setBudget(e.target.value); setError(""); }}
             className="input"
-            autoFocus={focusField === "budget"}
           />
           {error && <p className="error-msg">{error}</p>}
         </div>

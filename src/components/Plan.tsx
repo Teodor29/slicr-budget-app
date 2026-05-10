@@ -3,7 +3,6 @@ import { useBudget } from "../context/BudgetContext";
 import type { Category } from "../types";
 import AddCategoryModal from "./AddCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
-import EditIncomeModal from "./EditIncomeModal";
 import { MdEdit } from "react-icons/md";
 import { fmt } from "../lib/format";
 import ProgressBar from "./ProgressBar";
@@ -19,10 +18,18 @@ export default function Plan() {
   } = useBudget();
   const template = data.template;
 
-  const [incomeEditing, setIncomeEditing] = useState(false);
+  const [inlineIncome, setInlineIncome] = useState(false);
+  const [inlineIncomeVal, setInlineIncomeVal] = useState("");
+
+  function commitIncome() {
+    const parsed = parseFloat(inlineIncomeVal);
+    if (!isNaN(parsed) && parsed >= 0) setIncome(parsed);
+    setInlineIncome(false);
+  }
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [editingCat, setEditingCat] = useState<Category | null>(null);
-  const [focusField, setFocusField] = useState<"name" | "budget" | null>(null);
+  const [inlineBudgetId, setInlineBudgetId] = useState<string | null>(null);
+  const [inlineBudgetVal, setInlineBudgetVal] = useState("");
 
   const totalBudgeted = template.categories.reduce(
     (sum, cat) => sum + cat.budget,
@@ -40,9 +47,7 @@ export default function Plan() {
       <h2 className="hidden md:block">Plan</h2>
       <div className="card">
         <p className="mb-1">Remaining to budget</p>
-        <p
-          className={`text-4xl font-bold mb-3 ${overBudget && "text-danger"}`}
-        >
+        <p className={`text-4xl font-bold mb-3 ${overBudget && "text-danger"}`}>
           {fmt(remainingToBudget)} {currency}
         </p>
         <ProgressBar pct={budgetedPct} danger={overBudget} />
@@ -54,15 +59,33 @@ export default function Plan() {
       <div className="card">
         <h4 className="mb-3">Monthly income</h4>
         <div className="flex gap-2 items-center">
-          <div
-            className="flex flex-1 items-center justify-between cursor-pointer bg-subtle rounded-input px-3 py-2"
-            onClick={() => setIncomeEditing(true)}
-          >
-            <span className="text-lg font-bold">
-              {(template.income ?? 0).toLocaleString("en")}
-            </span>
-            <MdEdit className="w-4 h-4-muted" />
-          </div>
+          {inlineIncome ? (
+            <input
+              type="text"
+              inputMode="decimal"
+              value={inlineIncomeVal}
+              autoFocus
+              onFocus={(e) => e.target.select()}
+              onChange={(e) => setInlineIncomeVal(e.target.value)}
+              onBlur={commitIncome}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") commitIncome();
+                if (e.key === "Escape") setInlineIncome(false);
+              }}
+              maxLength={12}
+              className="flex-1 bg-subtle rounded-input px-3 py-2 text-lg font-bold focus:outline-none"
+            />
+          ) : (
+            <div
+              className="flex flex-1 items-center justify-between cursor-pointer bg-subtle rounded-input px-3 py-2"
+              onClick={() => { setInlineIncome(true); setInlineIncomeVal(String(template.income ?? 0)); }}
+            >
+              <span className="text-lg font-bold">
+                {(template.income ?? 0).toLocaleString("en")}
+              </span>
+              <MdEdit className="w-4 h-4-muted" />
+            </div>
+          )}
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
@@ -84,33 +107,60 @@ export default function Plan() {
         )}
 
         <div className="flex flex-col divide-y divide-border border-y border-border">
-          {template.categories.map((cat) => (
-            <div
-              key={cat.id}
-              className="flex items-center cursor-pointer py-2"
-              onClick={() => {
-                setEditingCat(cat);
-                setFocusField("name");
-              }}
-            >
-              <p className="text-sm font-medium">{cat.name}</p>
-              <div className="flex-1" />
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setEditingCat(cat);
-                  setFocusField("budget");
-                }}
-                className="px-3 py-2 rounded-lg bg-subtle"
+          {template.categories.map((cat) => {
+            const isEditingBudget = inlineBudgetId === cat.id;
+            function commitBudget() {
+              const parsed = parseFloat(inlineBudgetVal);
+              if (!isNaN(parsed) && parsed >= 0) {
+                updateCategory({ ...cat, budget: parsed });
+              }
+              setInlineBudgetId(null);
+            }
+            return (
+              <div
+                key={cat.id}
+                className="flex items-center cursor-pointer py-2"
+                onClick={() => setEditingCat(cat)}
               >
-                <span className="text-sm font-medium">
-                  {cat.budget.toLocaleString("en")} {currency}
-                </span>
-              </button>
-              <MdEdit className="w-4 h-4-muted ml-2" />
-            </div>
-          ))}
+                <p className="text-sm font-medium">{cat.name}</p>
+                <div className="flex-1" />
+                {isEditingBudget ? (
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    value={inlineBudgetVal}
+                    autoFocus
+                    onFocus={(e) => e.target.select()}
+                    onChange={(e) => setInlineBudgetVal(e.target.value)}
+                    onBlur={commitBudget}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") commitBudget();
+                      if (e.key === "Escape") setInlineBudgetId(null);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    maxLength={12}
+                    style={{ fieldSizing: "content" } as React.CSSProperties}
+                    className="px-3 py-2 rounded-lg bg-subtle text-right focus:outline-none min-w-[3ch]"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setInlineBudgetId(cat.id);
+                      setInlineBudgetVal(String(cat.budget));
+                    }}
+                    className="px-3 py-2 rounded-lg bg-subtle"
+                  >
+                    <span className="text-sm font-medium">
+                      {cat.budget.toLocaleString("en")} {currency}
+                    </span>
+                  </button>
+                )}
+                <MdEdit className="w-4 h-4-muted ml-2" />
+              </div>
+            );
+          })}
         </div>
 
         <button
@@ -127,21 +177,10 @@ export default function Plan() {
       {editingCat && (
         <EditCategoryModal
           category={editingCat}
-          onClose={() => {
-            setEditingCat(null);
-            setFocusField(null);
-          }}
+          onClose={() => setEditingCat(null)}
           onSave={updateCategory}
           onDelete={deleteCategory}
           canDelete={editingCat.id !== "other"}
-          focusField={focusField}
-        />
-      )}
-      {incomeEditing && (
-        <EditIncomeModal
-          income={template.income}
-          onClose={() => setIncomeEditing(false)}
-          onSave={setIncome}
         />
       )}
     </div>

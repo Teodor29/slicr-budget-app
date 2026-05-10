@@ -61,7 +61,7 @@ export default function AddTransactionModal({ onClose, editTransaction, onDelete
             value={amount}
             onChange={(e) => { setAmount(e.target.value); setError(""); }}
             className="input"
-            autoFocus
+            autoFocus={!editTransaction}
           />
           {error && <p className="error-msg">{error}</p>}
         </div>

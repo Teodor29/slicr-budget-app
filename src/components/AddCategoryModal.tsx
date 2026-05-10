@@ -69,22 +69,22 @@ export default function AddCategoryModal({ onClose }: Props) {
           />
           {suggestions.length > 0 && (
             <div className="relative mt-2">
-              <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {suggestions.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => {
-                    setName(s);
-                    setError("");
-                  }}
-                  className="tag"
-                >
-                  {s}
-                </button>
-              ))}
+              <div className="flex gap-2 overflow-x-auto flex-nowrap md:flex-wrap md:overflow-x-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => {
+                      setName(s);
+                      setError("");
+                    }}
+                    className="tag"
+                  >
+                    {s}
+                  </button>
+                ))}
               </div>
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-surface to-transparent" />
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-surface to-transparent md:hidden" />
             </div>
           )}
         </div>
