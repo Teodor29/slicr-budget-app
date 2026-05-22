@@ -77,8 +77,8 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
   function confirmNewMonth() {
     if (!pendingNewMonth) return
 
-    // Copy recurring transactions from the previous month into the new one
-    const prevMonth = data.months[data.currentMonth]
+    // Copy recurring transactions from the viewed month into the new one
+    const prevMonth = data.months[viewedMonth]
     const recurringTxs = (prevMonth?.transactions ?? [])
       .filter((tx) => tx.recurring)
       .map((tx) => ({
