@@ -88,7 +88,7 @@ export default function Plan() {
                 if (e.key === 'Escape') setEditingIncome(false)
               }}
               maxLength={12}
-              className="flex-1 bg-subtle rounded-input px-3 py-2 text-lg font-bold focus:outline-none"
+              className="flex-1 min-w-0 bg-subtle rounded-input px-3 py-2 text-lg font-bold focus:outline-none"
             />
           ) : (
             <div
