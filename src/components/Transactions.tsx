@@ -70,7 +70,7 @@ export default function Transactions() {
                           <p className="text-sm font-medium">
                             {getCategoryName(tx.categoryId)}
                           </p>
-                          <p className="text-xs-muted mt-0.5">
+                          <p className="text-sm text-fg-muted mt-0.5">
                             {tx.description}
                           </p>
                         </div>

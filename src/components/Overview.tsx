@@ -100,7 +100,7 @@ export default function Overview() {
                       {fmt(spent)} / {fmt(cat.budget)} {currency}
                     </span>
                   </div>
-                  <ProgressBar pct={pct} danger={over} size="sm" />
+                  <ProgressBar pct={pct} danger={over} size="sm" muted />
                 </div>
               )
             })}

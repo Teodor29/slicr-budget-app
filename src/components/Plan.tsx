@@ -15,6 +15,7 @@ export default function Plan() {
     deleteCategory,
     currency,
     setCurrency,
+    loadSeedData,
   } = useBudget()
   const template = data.template
 
@@ -194,6 +195,13 @@ export default function Plan() {
           canDelete={editingCat.id !== 'other'}
         />
       )}
+
+      <button
+        onClick={loadSeedData}
+        className="text-sm text-fg-muted underline hover:text-fg-muted/80 underline-offset-2 transition"
+      >
+        Load demo data
+      </button>
     </div>
   )
 }

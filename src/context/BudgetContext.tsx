@@ -11,6 +11,7 @@ import {
   saveData,
   getCurrentMonthKey,
   createInitialData,
+  createSeedData,
 } from '../lib/storage'
 
 interface BudgetCtx {
@@ -30,6 +31,7 @@ interface BudgetCtx {
   setIncome: (amount: number) => void
   currency: string
   setCurrency: (c: string) => void
+  loadSeedData: () => void
 }
 
 const BudgetContext = createContext<BudgetCtx | null>(null)
@@ -205,6 +207,13 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
     save({ ...data, currency: c })
   }
 
+  function loadSeedData() {
+    const seed = createSeedData()
+    setData(seed)
+    saveData(seed)
+    setViewedMonth(seed.currentMonth)
+  }
+
   return (
     <BudgetContext.Provider
       value={{
@@ -224,6 +233,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         setIncome,
         currency: data.currency,
         setCurrency,
+        loadSeedData,
       }}
     >
       {children}

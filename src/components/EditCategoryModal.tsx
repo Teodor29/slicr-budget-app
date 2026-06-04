@@ -67,7 +67,9 @@ export default function EditCategoryModal({
             }}
             className="input"
           />
-          {error === 'Enter a valid budget' && <p className="error-msg">{error}</p>}
+          {error === 'Enter a valid budget' && (
+            <p className="error-msg">{error}</p>
+          )}
         </div>
       </div>
 

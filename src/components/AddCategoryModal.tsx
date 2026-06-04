@@ -105,7 +105,9 @@ export default function AddCategoryModal({ onClose }: Props) {
             }}
             className="input"
           />
-          {error === 'Enter a valid budget' && <p className="error-msg">{error}</p>}
+          {error === 'Enter a valid budget' && (
+            <p className="error-msg">{error}</p>
+          )}
         </div>
       </div>
 
