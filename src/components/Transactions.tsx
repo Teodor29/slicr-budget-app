@@ -1,38 +1,47 @@
-import { useState } from 'react'
-import { useBudget } from '../context/BudgetContext'
-import type { Transaction } from '../types'
-import AddTransactionModal from './AddTransactionModal'
-import { MdEdit, MdAdd, MdRepeat } from 'react-icons/md'
+import { useState } from "react"
+import { useBudget } from "../context/BudgetContext"
+import type { Transaction } from "../types"
+import TransactionModal from "./TransactionModal"
+import { MdEdit, MdAdd, MdRepeat } from "react-icons/md"
+import { formatAmount } from "../lib/format"
+import { dayLabel } from "../lib/date"
 
-export default function Transactions() {
-  const { data, viewedMonth, deleteTransaction, currency } = useBudget()
-  const month = data.months[viewedMonth]
-  const [editTx, setEditTx] = useState<Transaction | null>(null)
-  const [showAdd, setShowAdd] = useState(false)
+interface DayGroup {
+  date: string
+  transactions: Transaction[]
+}
 
-  const sorted = [...(month?.transactions ?? [])].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+function groupByDay(transactions: Transaction[]) {
+  const newestFirst = [...transactions].sort((a, b) =>
+    b.date.localeCompare(a.date),
   )
 
-  // Group consecutive transactions by date (already sorted)
-  const groups: { date: string; txs: Transaction[] }[] = []
-  for (const tx of sorted) {
-    const last = groups[groups.length - 1]
-    if (last?.date === tx.date) last.txs.push(tx)
-    else groups.push({ date: tx.date, txs: [tx] })
+  const groups: DayGroup[] = []
+  for (const transaction of newestFirst) {
+    const lastGroup = groups[groups.length - 1]
+    if (lastGroup && lastGroup.date === transaction.date) {
+      lastGroup.transactions.push(transaction)
+    } else {
+      groups.push({ date: transaction.date, transactions: [transaction] })
+    }
   }
+  return groups
+}
 
-  function getCategoryName(categoryId: string | null) {
-    if (!categoryId) return 'Other'
-    return month?.categories.find((c) => c.id === categoryId)?.name ?? 'Other'
-  }
+export default function Transactions() {
+  const { data, viewedMonth, currency } = useBudget()
+  const month = data.months[viewedMonth]
+  const transactions = month?.transactions ?? []
+  const dayGroups = groupByDay(transactions)
 
-  function formatDate(dateStr: string) {
-    return new Date(dateStr + 'T00:00:00').toLocaleDateString('en', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'long',
-    })
+  // "new" = adding a transaction, a Transaction = editing that transaction
+  const [modal, setModal] = useState<Transaction | "new" | null>(null)
+
+  function getCategoryName(categoryId: string) {
+    const category = month?.categories.find(
+      (category) => category.id === categoryId,
+    )
+    return category?.name ?? "Other"
   }
 
   return (
@@ -40,66 +49,61 @@ export default function Transactions() {
       <div className="flex items-center justify-between">
         <h2 className="hidden md:block">Transactions</h2>
         <button
-          onClick={() => setShowAdd(true)}
+          onClick={() => setModal("new")}
           className="hidden md:flex items-center gap-1.5 btn-primary btn-sm"
         >
-          <MdAdd className="w-4 h-4" />
+          <MdAdd className="size-4" />
           Add
         </button>
       </div>
 
-      {sorted.length === 0 ? (
+      {transactions.length === 0 && (
         <p className="text-center py-10">No transactions yet.</p>
-      ) : (
-        <div className="form-stack">
-          {groups.map(({ date, txs }) => (
-            <div key={date}>
-              <h3 className="text-sm font-semibold-muted px-4 mb-2">
-                {formatDate(date)}
-              </h3>
-              <div className="bg-surface rounded-card shadow-sm">
-                <div className="flex flex-col">
-                  {txs.map((tx, i) => (
-                    <div key={tx.id}>
-                      {i > 0 && <div className="h-px bg-border mx-4" />}
-                      <div
-                        onClick={() => setEditTx(tx)}
-                        className="flex items-center px-4 py-3.5 cursor-pointer"
-                      >
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">
-                            {getCategoryName(tx.categoryId)}
-                          </p>
-                          <p className="text-sm text-fg-muted mt-0.5">
-                            {tx.description}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {tx.recurring && (
-                            <MdRepeat className="w-4 h-4-muted" />
-                          )}
-                          <span className="text-sm font-medium">
-                            {tx.amount.toLocaleString('en')} {currency}
-                          </span>
-                          <MdEdit className="w-4 h-4-muted" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       )}
 
-      {showAdd && <AddTransactionModal onClose={() => setShowAdd(false)} />}
-      {editTx && (
-        <AddTransactionModal
-          onClose={() => setEditTx(null)}
-          editTransaction={editTx}
-          onDelete={deleteTransaction}
-        />
+      <div className="form-stack">
+        {dayGroups.map((group) => (
+          <div key={group.date}>
+            <h3 className="text-sm font-semibold text-fg-muted px-4 mb-2">
+              {dayLabel(group.date)}
+            </h3>
+            <div className="bg-surface rounded-card shadow-sm divide-y divide-border">
+              {group.transactions.map((transaction) => (
+                <button
+                  key={transaction.id}
+                  onClick={() => setModal(transaction)}
+                  className="flex w-full items-center px-4 py-3.5 text-left"
+                >
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">
+                      {getCategoryName(transaction.categoryId)}
+                    </p>
+                    <p className="text-sm text-fg-muted mt-0.5">
+                      {transaction.description}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {transaction.recurring && (
+                      <MdRepeat
+                        className="size-4 text-fg-muted"
+                        aria-label="Repeats every month"
+                      />
+                    )}
+                    <span className="text-sm font-medium">
+                      {formatAmount(transaction.amount)} {currency}
+                    </span>
+                    <MdEdit className="size-4 text-fg-muted" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {modal === "new" && <TransactionModal onClose={() => setModal(null)} />}
+      {modal && modal !== "new" && (
+        <TransactionModal transaction={modal} onClose={() => setModal(null)} />
       )}
     </div>
   )

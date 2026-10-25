@@ -4,218 +4,177 @@ import {
   useState,
   useEffect,
   type ReactNode,
-} from 'react'
-import type { AppData, Category, Month, Transaction } from '../types'
-import {
-  loadData,
-  saveData,
-  getCurrentMonthKey,
-  createInitialData,
-  createSeedData,
-} from '../lib/storage'
+} from "react"
+import type { AppData, Category, Month, Template, Transaction } from "../types"
+import { loadData, saveData, createInitialData } from "../lib/storage"
+import { createSeedData } from "../lib/seed"
+import { currentMonthKey } from "../lib/date"
 
-interface BudgetCtx {
+interface BudgetContextValue {
   data: AppData
   viewedMonth: string
-  setViewedMonth: (m: string) => void
+  setViewedMonth: (monthKey: string) => void
   pendingNewMonth: string | null
-  promptMonth: (key: string) => void
+  promptMonth: (monthKey: string) => void
   confirmNewMonth: () => void
   dismissNewMonth: () => void
-  addTransaction: (t: Omit<Transaction, 'id'>) => void
-  updateTransaction: (t: Transaction) => void
+  addTransaction: (transaction: Omit<Transaction, "id">) => void
+  updateTransaction: (transaction: Transaction) => void
   deleteTransaction: (id: string) => void
-  addCategory: (cat: Omit<Category, 'id'>) => string
-  updateCategory: (cat: Category) => void
+  addCategory: (category: Omit<Category, "id">) => string
+  updateCategory: (category: Category) => void
   deleteCategory: (id: string) => void
   setIncome: (amount: number) => void
   currency: string
-  setCurrency: (c: string) => void
+  setCurrency: (currency: string) => void
   loadSeedData: () => void
 }
 
-const BudgetContext = createContext<BudgetCtx | null>(null)
-
-// Creates a fresh month from the template (copies income and categories, starts with no transactions)
-function buildMonth(template: AppData['template']): Month {
-  return {
-    income: template.income,
-    categories: template.categories.map((c) => ({ ...c })),
-    transactions: [],
-  }
-}
+const BudgetContext = createContext<BudgetContextValue | null>(null)
 
 export function BudgetProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(
-    () => loadData() ?? createInitialData()
+    () => loadData() ?? createInitialData(),
   )
-  const [viewedMonth, setViewedMonth] = useState(() => data.currentMonth)
-  const [pendingNewMonth, setPendingNewMonth] = useState<string | null>(null)
+
+  const currentMonthExists = Boolean(data.months[currentMonthKey()])
+
+  const [viewedMonth, setViewedMonth] = useState(() => {
+    if (currentMonthExists) return currentMonthKey()
+    const latestMonth = Object.keys(data.months).sort().pop()!
+    return latestMonth
+  })
+
+  const [pendingNewMonth, setPendingNewMonth] = useState<string | null>(() => {
+    if (currentMonthExists) return null
+    return currentMonthKey()
+  })
 
   useEffect(() => {
-    const real = getCurrentMonthKey()
-    if (real !== data.currentMonth) setPendingNewMonth(real)
-  }, [data.currentMonth])
+    saveData(data)
+  }, [data])
 
-  function save(next: AppData) {
-    setData(next)
-    saveData(next)
+  function updateViewedMonth(change: (month: Month) => Month) {
+    setData((prev) => {
+      const month = prev.months[viewedMonth]
+      if (!month) return prev
+
+      return {
+        ...prev,
+        months: { ...prev.months, [viewedMonth]: change(month) },
+      }
+    })
   }
 
-  // Helper to update transactions for the month currently on screen.
-  // React state must be replaced (not mutated), so we spread into a new object.
-  function updateViewedTransactions(fn: (txs: Transaction[]) => Transaction[]) {
-    const month = data.months[viewedMonth]
-    if (!month) return
-    save({
-      ...data,
-      months: {
-        ...data.months,
-        [viewedMonth]: { ...month, transactions: fn(month.transactions) },
-      },
-    })
+  function updateViewedTransactions(
+    change: (transactions: Transaction[]) => Transaction[],
+  ) {
+    updateViewedMonth((month) => ({
+      ...month,
+      transactions: change(month.transactions),
+    }))
   }
 
   function confirmNewMonth() {
     if (!pendingNewMonth) return
+    const newMonthKey = pendingNewMonth
 
-    // Copy recurring transactions from the viewed month into the new one
-    const prevMonth = data.months[viewedMonth]
-    const recurringTxs = (prevMonth?.transactions ?? [])
-      .filter((tx) => tx.recurring)
-      .map((tx) => ({
-        ...tx,
-        id: crypto.randomUUID(),
-        date: pendingNewMonth + '-01',
-      }))
-    const newMonth = buildMonth(data.template)
-    newMonth.transactions = recurringTxs
-    const isRealCurrentMonth = pendingNewMonth === getCurrentMonthKey()
-    save({
-      ...data,
-      currentMonth: isRealCurrentMonth ? pendingNewMonth : data.currentMonth,
-      months: { ...data.months, [pendingNewMonth]: newMonth },
+    setData((prev) => {
+      const previousTransactions = prev.months[viewedMonth]?.transactions ?? []
+      const recurringTransactions = previousTransactions
+        .filter((transaction) => transaction.recurring)
+        .map((transaction) => ({
+          ...transaction,
+          id: crypto.randomUUID(),
+          date: newMonthKey + "-01",
+        }))
+
+      const newMonth = { ...prev.template, transactions: recurringTransactions }
+      return { ...prev, months: { ...prev.months, [newMonthKey]: newMonth } }
     })
-    setViewedMonth(pendingNewMonth)
+
+    setViewedMonth(newMonthKey)
     setPendingNewMonth(null)
   }
 
-  function addTransaction(t: Omit<Transaction, 'id'>) {
-    updateViewedTransactions((txs) => [
-      ...txs,
-      { ...t, id: crypto.randomUUID() },
+  function addTransaction(newTransaction: Omit<Transaction, "id">) {
+    updateViewedTransactions((transactions) => [
+      ...transactions,
+      { ...newTransaction, id: crypto.randomUUID() },
     ])
   }
 
-  function updateTransaction(t: Transaction) {
-    updateViewedTransactions((txs) =>
-      txs.map((tx) => (tx.id === t.id ? t : tx))
+  function updateTransaction(updated: Transaction) {
+    updateViewedTransactions((transactions) =>
+      transactions.map((transaction) => {
+        if (transaction.id === updated.id) return updated
+        return transaction
+      }),
     )
   }
 
   function deleteTransaction(id: string) {
-    updateViewedTransactions((txs) => txs.filter((tx) => tx.id !== id))
+    updateViewedTransactions((transactions) =>
+      transactions.filter((transaction) => transaction.id !== id),
+    )
   }
 
-  // Categories and income are saved in two places:
-  // - template: the blueprint used when a new month is created
-  // - current month: what's shown on screen right now
-
-  function addCategory(cat: Omit<Category, 'id'>): string {
-    const newCat = { ...cat, id: crypto.randomUUID() }
-    const curMonth = data.months[viewedMonth]
-    save({
-      ...data,
-      template: {
-        ...data.template,
-        categories: [...data.template.categories, newCat],
-      },
-      months: curMonth
-        ? {
-            ...data.months,
-            [viewedMonth]: {
-              ...curMonth,
-              categories: [...curMonth.categories, newCat],
-            },
-          }
-        : data.months,
-    })
-    return newCat.id
+  function updatePlan(change: (plan: Template) => Template) {
+    setData((prev) => ({ ...prev, template: change(prev.template) }))
+    updateViewedMonth((month) => ({ ...month, ...change(month) }))
   }
 
-  function updateCategory(cat: Category) {
-    const curMonth = data.months[viewedMonth]
-    save({
-      ...data,
-      template: {
-        ...data.template,
-        categories: data.template.categories.map((c) =>
-          c.id === cat.id ? cat : c
-        ),
-      },
-      months: curMonth
-        ? {
-            ...data.months,
-            [viewedMonth]: {
-              ...curMonth,
-              categories: curMonth.categories.map((c) =>
-                c.id === cat.id ? cat : c
-              ),
-            },
-          }
-        : data.months,
-    })
+  function addCategory(category: Omit<Category, "id">): string {
+    const newCategory = { ...category, id: crypto.randomUUID() }
+    updatePlan((plan) => ({
+      ...plan,
+      categories: [...plan.categories, newCategory],
+    }))
+    return newCategory.id
+  }
+
+  function updateCategory(updated: Category) {
+    updatePlan((plan) => ({
+      ...plan,
+      categories: plan.categories.map((category) => {
+        if (category.id === updated.id) return updated
+        return category
+      }),
+    }))
   }
 
   function deleteCategory(id: string) {
-    if (id === 'other') return
-    const curMonth = data.months[viewedMonth]
-    save({
-      ...data,
-      template: {
-        ...data.template,
-        categories: data.template.categories.filter((c) => c.id !== id),
-      },
-      months: curMonth
-        ? {
-            ...data.months,
-            [viewedMonth]: {
-              ...curMonth,
-              categories: curMonth.categories.filter((c) => c.id !== id),
-              // Move transactions that belonged to the deleted category to "uncategorized"
-              transactions: curMonth.transactions.map((t) =>
-                t.categoryId === id ? { ...t, categoryId: null } : t
-              ),
-            },
-          }
-        : data.months,
-    })
+    if (id === "other") return
+
+    updatePlan((plan) => ({
+      ...plan,
+      categories: plan.categories.filter((category) => category.id !== id),
+    }))
+    updateViewedTransactions((transactions) =>
+      transactions.map((transaction) => {
+        if (transaction.categoryId === id) {
+          return { ...transaction, categoryId: "other" }
+        }
+        return transaction
+      }),
+    )
   }
 
   function setIncome(amount: number) {
-    const curMonth = data.months[viewedMonth]
-    save({
-      ...data,
-      template: { ...data.template, income: amount },
-      months: curMonth
-        ? { ...data.months, [viewedMonth]: { ...curMonth, income: amount } }
-        : data.months,
-    })
+    updatePlan((plan) => ({ ...plan, income: amount }))
   }
 
-  function setCurrency(c: string) {
-    save({ ...data, currency: c })
+  function setCurrency(currency: string) {
+    setData((prev) => ({ ...prev, currency }))
   }
 
   function loadSeedData() {
-    const seed = createSeedData()
-    setData(seed)
-    saveData(seed)
-    setViewedMonth(seed.currentMonth)
+    setData(createSeedData())
+    setViewedMonth(currentMonthKey())
   }
 
   return (
-    <BudgetContext.Provider
+    <BudgetContext
       value={{
         data,
         viewedMonth,
@@ -237,12 +196,12 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-    </BudgetContext.Provider>
+    </BudgetContext>
   )
 }
 
 export function useBudget() {
-  const ctx = useContext(BudgetContext)
-  if (!ctx) throw new Error('useBudget must be used within BudgetProvider')
-  return ctx
+  const context = useContext(BudgetContext)
+  if (!context) throw new Error("useBudget must be used within BudgetProvider")
+  return context
 }

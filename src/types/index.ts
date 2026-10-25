@@ -6,17 +6,11 @@ export interface Category {
 
 export interface Transaction {
   id: string
-  categoryId: string | null
+  categoryId: string
   amount: number
   description: string
   date: string
   recurring?: boolean
-}
-
-export interface Month {
-  income: number
-  categories: Category[]
-  transactions: Transaction[]
 }
 
 export interface Template {
@@ -24,9 +18,12 @@ export interface Template {
   categories: Category[]
 }
 
+export interface Month extends Template {
+  transactions: Transaction[]
+}
+
 export interface AppData {
   template: Template
   months: Record<string, Month>
-  currentMonth: string
   currency: string
 }

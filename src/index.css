@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
   --color-page: oklch(90% 0 265);
@@ -15,7 +14,7 @@
   --radius-card: 1rem;
   --radius-input: 0.75rem;
 
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,6 +31,10 @@
   }
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+}
+
 @layer components {
   .card {
     @apply bg-surface rounded-card p-4;
@@ -42,25 +45,26 @@
   }
 
   .input {
-    @apply w-full bg-surface border border-border rounded-input px-4 py-3 min-h-[44px] text-base focus:outline-none focus:ring-2 ring-inset focus:ring-primary;
+    @apply w-full bg-surface border border-border rounded-input px-4 py-3 min-h-11 text-base focus:outline-none focus:ring-2 ring-inset focus:ring-primary;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger {
+    @apply inline-flex items-center justify-center px-4 py-3 min-h-11 rounded-input
+           font-medium select-none transition-colors;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-4 py-3 min-h-[44px] rounded-input
-           bg-primary text-white font-semibold select-none
-           transition-colors active:bg-primary-hover hover:bg-primary-hover;
+    @apply bg-primary text-white font-semibold active:bg-primary-hover hover:bg-primary-hover;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-4 py-3 min-h-[44px] rounded-input
-           border border-border text-fg-muted font-medium select-none
-           transition-colors active:bg-subtle hover:bg-subtle;
+    @apply border border-border text-fg-muted active:bg-subtle hover:bg-subtle;
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center w-full mt-3 px-4 py-3 min-h-[44px] rounded-input
-           border border-danger text-danger font-medium select-none
-           transition-colors active:opacity-70;
+    @apply w-full mt-3 border border-danger text-danger active:opacity-70;
   }
 
   .btn-sm {
@@ -109,9 +113,5 @@
   h4 {
     font-size: 1rem;
     font-weight: 600;
-  }
-
-  body {
-    padding-top: env(safe-area-inset-top);
   }
 }
