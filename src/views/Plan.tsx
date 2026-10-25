@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { useBudget } from "../context/BudgetContext"
 import type { Category } from "../types"
-import CategoryModal from "./CategoryModal"
-import EditableNumber from "./EditableNumber"
-import SummaryCard from "./SummaryCard"
+import CategoryModal from "../components/CategoryModal"
+import EditableNumber from "../components/EditableNumber"
+import SummaryCard from "../components/SummaryCard"
 import { MdEdit } from "react-icons/md"
 import { formatAmount } from "../lib/format"
 
@@ -16,7 +16,7 @@ export default function Plan() {
     updateCategory,
     currency,
     setCurrency,
-    loadSeedData,
+    resetData,
   } = useBudget()
   const template = data.template
 
@@ -103,10 +103,10 @@ export default function Plan() {
       )}
 
       <button
-        onClick={loadSeedData}
+        onClick={resetData}
         className="text-sm text-fg-muted underline hover:text-fg-muted/80 underline-offset-2 transition"
       >
-        Load demo data
+        Reset all data
       </button>
     </div>
   )

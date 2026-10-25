@@ -26,4 +26,5 @@ export interface AppData {
   template: Template
   months: Record<string, Month>
   currency: string
+  isDemo?: boolean
 }

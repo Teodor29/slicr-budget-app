@@ -27,14 +27,14 @@ interface BudgetContextValue {
   setIncome: (amount: number) => void
   currency: string
   setCurrency: (currency: string) => void
-  loadSeedData: () => void
+  resetData: () => void
 }
 
 const BudgetContext = createContext<BudgetContextValue | null>(null)
 
 export function BudgetProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(
-    () => loadData() ?? createInitialData(),
+    () => loadData() ?? createSeedData(),
   )
 
   const currentMonthExists = Boolean(data.months[currentMonthKey()])
@@ -168,8 +168,9 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
     setData((prev) => ({ ...prev, currency }))
   }
 
-  function loadSeedData() {
-    setData(createSeedData())
+  function resetData() {
+    if (!window.confirm("Delete all data and start fresh?")) return
+    setData(createInitialData())
     setViewedMonth(currentMonthKey())
   }
 
@@ -192,7 +193,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         setIncome,
         currency: data.currency,
         setCurrency,
-        loadSeedData,
+        resetData,
       }}
     >
       {children}

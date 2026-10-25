@@ -3,16 +3,22 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md"
 import { formatAmount } from "../lib/format"
 import { addMonths, monthLabel } from "../lib/date"
 import type { Category, Transaction } from "../types"
-import ProgressBar from "./ProgressBar"
-import SummaryCard from "./SummaryCard"
+import ProgressBar from "../components/ProgressBar"
+import SummaryCard from "../components/SummaryCard"
 
 function sumAmounts(transactions: Transaction[]) {
   return transactions.reduce((sum, transaction) => sum + transaction.amount, 0)
 }
 
 export default function Overview() {
-  const { data, viewedMonth, setViewedMonth, promptMonth, currency } =
-    useBudget()
+  const {
+    data,
+    viewedMonth,
+    setViewedMonth,
+    promptMonth,
+    currency,
+    resetData,
+  } = useBudget()
 
   const monthKeys = Object.keys(data.months).sort()
   const currentIndex = monthKeys.indexOf(viewedMonth)
@@ -69,14 +75,23 @@ export default function Overview() {
           <MdChevronRight className="size-6" />
         </button>
       </div>
-
+      {data.isDemo && (
+        <div className="card flex items-center justify-between gap-3 text-sm text-fg-muted">
+          <span>You're viewing demo data</span>
+          <button
+            onClick={resetData}
+            className="font-medium text-primary hover:text-primary-hover"
+          >
+            Start fresh
+          </button>
+        </div>
+      )}
       <SummaryCard
         label="Remaining"
         used={totalSpent}
         total={month.income}
         usedLabel="spent"
       />
-
       {month.categories.length > 0 && (
         <div className="card">
           <h3 className="mb-4">Total Budgeted</h3>

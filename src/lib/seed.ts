@@ -44,5 +44,6 @@ export function createSeedData(): AppData {
     template: { income: 35000, categories },
     months: { [month]: { income: 35000, categories, transactions } },
     currency: "kr",
+    isDemo: true,
   }
 }

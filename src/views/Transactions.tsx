@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useBudget } from "../context/BudgetContext"
 import type { Transaction } from "../types"
-import TransactionModal from "./TransactionModal"
+import TransactionModal from "../components/TransactionModal"
 import { MdEdit, MdAdd, MdRepeat } from "react-icons/md"
 import { formatAmount } from "../lib/format"
 import { dayLabel } from "../lib/date"
