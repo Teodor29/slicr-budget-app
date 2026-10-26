@@ -23,6 +23,8 @@ A personal budgeting web app that allows users to set monthly income, create spe
 - Tailwind CSS
 - Vite
 
+Built with the help of Claude Code. I designed the app and reviewed all code.
+
 ## Installation
 
 To run the project locally:
