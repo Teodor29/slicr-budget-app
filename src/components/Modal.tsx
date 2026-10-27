@@ -21,7 +21,7 @@ export default function Modal({ title, onClose, onSubmit, children }: Props) {
           onSubmit()
         }}
       >
-        <h2 className="text-xl font-bold mb-3">{title}</h2>
+        <h2 className="mb-3">{title}</h2>
         {children}
       </form>
     </div>

@@ -10,14 +10,8 @@ import { formatAmount } from "../lib/format"
 const CURRENCIES = ["kr", "€", "$", "£", "¥", "CHF", "₹", "R$", "₩", "₺"]
 
 export default function Plan() {
-  const {
-    data,
-    setIncome,
-    updateCategory,
-    currency,
-    setCurrency,
-    resetData,
-  } = useBudget()
+  const { data, setIncome, updateCategory, currency, setCurrency, resetData } =
+    useBudget()
   const template = data.template
 
   // "new" = adding a category, a Category = editing that category
@@ -29,50 +23,50 @@ export default function Plan() {
   )
 
   return (
-    <div className="flex flex-col gap-4 md:border-t md:border-border pt-6">
-      <h2 className="hidden md:block">Plan</h2>
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-[3fr_2fr] md:grid-rows-[auto_1fr] md:gap-6 md:items-start">
+      <div className="flex flex-col gap-4 md:gap-6">
+        <SummaryCard
+          label="Remaining to budget"
+          used={totalBudgeted}
+          total={template.income}
+          usedLabel="budgeted"
+        />
 
-      <SummaryCard
-        label="Remaining to budget"
-        used={totalBudgeted}
-        total={template.income}
-        usedLabel="budgeted"
-      />
-
-      <div className="card">
-        <h4 className="mb-3">Monthly income</h4>
-        <div className="flex gap-2 items-center">
-          <EditableNumber
-            value={template.income}
-            onSave={setIncome}
-            label="Monthly income"
-            className="flex flex-1 min-w-0 items-center justify-between bg-subtle rounded-input px-3 py-2 text-lg font-bold"
-          >
-            {formatAmount(template.income)}
-            <MdEdit className="size-4 text-fg-muted" />
-          </EditableNumber>
-          <select
-            aria-label="Currency"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            className="input w-auto"
-          >
-            {CURRENCIES.map((symbol) => (
-              <option key={symbol}>{symbol}</option>
-            ))}
-          </select>
+        <div className="card">
+          <h2 className="mb-3">Monthly income</h2>
+          <div className="flex gap-2 items-center">
+            <EditableNumber
+              value={template.income}
+              onSave={setIncome}
+              label="Monthly income"
+              className="flex flex-1 min-w-0 items-center justify-between bg-subtle rounded-input px-3 py-2 text-lg font-bold"
+            >
+              {formatAmount(template.income)}
+              <MdEdit className="size-4 text-fg-muted" />
+            </EditableNumber>
+            <select
+              aria-label="Currency"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className="input w-auto"
+            >
+              {CURRENCIES.map((symbol) => (
+                <option key={symbol}>{symbol}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      <div className="card">
-        <h4 className="mb-3">Categories</h4>
+      <div className="card md:row-span-2">
+        <h2 className="mb-3">Categories</h2>
         <div className="flex flex-col divide-y divide-border border-y border-border">
           {template.categories.map((category) => (
             <div key={category.id} className="flex items-center gap-2 py-2">
               <button
                 type="button"
                 onClick={() => setModal(category)}
-                className="flex flex-1 items-center gap-2 text-left text-sm font-medium"
+                className="flex flex-1 items-center gap-2 text-left text-sm font-medium hover:text-primary"
               >
                 {category.name}
                 <MdEdit className="size-4 text-fg-muted" />
@@ -104,7 +98,7 @@ export default function Plan() {
 
       <button
         onClick={resetData}
-        className="text-sm text-fg-muted underline hover:text-fg-muted/80 underline-offset-2 transition"
+        className="text-sm text-fg-muted underline hover:text-fg-muted/80 underline-offset-2 transition md:col-start-1 md:self-start md:justify-self-center"
       >
         Reset all data
       </button>

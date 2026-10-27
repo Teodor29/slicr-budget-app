@@ -64,9 +64,7 @@ export default function Overview() {
         >
           <MdChevronLeft className="size-6" />
         </button>
-        <h1 className="text-lg md:text-3xl font-semibold">
-          {monthLabel(viewedMonth)}
-        </h1>
+        <h1 className="text-lg md:text-2xl">{monthLabel(viewedMonth)}</h1>
         <button
           aria-label="Next month"
           onClick={goToNextMonth}
@@ -94,7 +92,7 @@ export default function Overview() {
       />
       {month.categories.length > 0 && (
         <div className="card">
-          <h3 className="mb-4">Total Budgeted</h3>
+          <h2 className="mb-3">Total Budgeted</h2>
           <div className="form-stack">
             {month.categories.map((category) => {
               const spent = spentInCategory(category)

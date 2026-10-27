@@ -1,39 +1,33 @@
 import type { ReactNode } from "react"
+import { NavLink } from "react-router"
 import { FaChartPie } from "react-icons/fa"
 import { MdNotes, MdEdit } from "react-icons/md"
 
-export type View = "overview" | "transactions" | "plan"
-
 const NAV_ITEMS = [
-  { id: "overview", label: "Overview", Icon: FaChartPie },
-  { id: "transactions", label: "Transactions", Icon: MdNotes },
-  { id: "plan", label: "Plan", Icon: MdEdit },
+  { to: "/", label: "Overview", Icon: FaChartPie },
+  { to: "/transactions", label: "Transactions", Icon: MdNotes },
+  { to: "/plan", label: "Plan", Icon: MdEdit },
 ] as const
 
+function navItemClass({ isActive }: { isActive: boolean }) {
+  const color = isActive ? "text-primary" : "text-fg-muted"
+  return `flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium ${color}`
+}
+
 interface Props {
-  view: View
-  onNavigate: (view: View) => void
   children?: ReactNode
 }
 
-export default function BottomNav({ view, onNavigate, children }: Props) {
+export default function BottomNav({ children }: Props) {
   return (
     <nav className="md:hidden sticky bottom-0 z-10 bg-surface border-t border-border flex">
       {children}
-      {NAV_ITEMS.map(({ id, label, Icon }) => {
-        const isActive = view === id
-        return (
-          <button
-            key={id}
-            onClick={() => onNavigate(id)}
-            aria-current={isActive ? "page" : undefined}
-            className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium ${isActive ? "text-primary" : "text-fg-muted"}`}
-          >
-            <Icon className="size-6" />
-            {label}
-          </button>
-        )
-      })}
+      {NAV_ITEMS.map(({ to, label, Icon }) => (
+        <NavLink key={to} to={to} end className={navItemClass}>
+          <Icon className="size-6" />
+          {label}
+        </NavLink>
+      ))}
     </nav>
   )
 }

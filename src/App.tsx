@@ -1,39 +1,35 @@
 import { useState } from "react"
+import { BrowserRouter, Navigate, Route, Routes, useMatch } from "react-router"
 import { BudgetProvider } from "./context/BudgetContext"
-import Overview from "./views/Overview"
+import Month from "./views/Month"
 import Plan from "./views/Plan"
-import Transactions from "./views/Transactions"
 import { MdAdd } from "react-icons/md"
 import TransactionModal from "./components/TransactionModal"
-import BottomNav, { type View } from "./components/BottomNav"
+import BottomNav from "./components/BottomNav"
 import NewMonthPrompt from "./components/NewMonthPrompt"
+import DesktopHeader from "./components/DesktopHeader"
 
 function AppInner() {
-  const [view, setView] = useState<View>("overview")
   const [showAdd, setShowAdd] = useState(false)
-  const showFab = view === "overview" || view === "transactions"
-
-  function panelClass(panelView: View) {
-    if (view === panelView) return ""
-    return "hidden md:block"
-  }
+  const isPlanPage = useMatch("/plan") !== null
 
   return (
     <div className="min-h-dvh flex flex-col">
-      <main className="flex-1 w-full px-4 py-6 md:grid md:grid-cols-[2fr_1fr] md:gap-6 md:px-8 md:py-10 max-w-6xl mx-auto">
-        <section className={panelClass("overview")}>
-          <Overview />
-        </section>
-        <section className={panelClass("transactions")}>
-          <Transactions />
-        </section>
-        <section className={panelClass("plan")}>
-          <Plan />
-        </section>
+      <DesktopHeader />
+      <main className="flex-1 w-full px-4 py-6 md:px-8 md:py-8 max-w-6xl mx-auto">
+        <Routes>
+          <Route path="/" element={<Month mobileView="overview" />} />
+          <Route
+            path="/transactions"
+            element={<Month mobileView="transactions" />}
+          />
+          <Route path="/plan" element={<Plan />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
-      <BottomNav view={view} onNavigate={setView}>
-        {showFab && (
+      <BottomNav>
+        {!isPlanPage && (
           <button
             aria-label="Add expense"
             onClick={() => setShowAdd(true)}
@@ -52,8 +48,10 @@ function AppInner() {
 
 export default function App() {
   return (
-    <BudgetProvider>
-      <AppInner />
-    </BudgetProvider>
+    <BrowserRouter>
+      <BudgetProvider>
+        <AppInner />
+      </BudgetProvider>
+    </BrowserRouter>
   )
 }

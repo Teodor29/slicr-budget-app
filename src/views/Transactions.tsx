@@ -67,12 +67,12 @@ export default function Transactions() {
             <h3 className="text-sm font-semibold text-fg-muted px-4 mb-2">
               {dayLabel(group.date)}
             </h3>
-            <div className="bg-surface rounded-card shadow-sm divide-y divide-border">
+            <div className="bg-surface rounded-card shadow-sm divide-y divide-border overflow-hidden">
               {group.transactions.map((transaction) => (
                 <button
                   key={transaction.id}
                   onClick={() => setModal(transaction)}
-                  className="flex w-full items-center px-4 py-3.5 text-left"
+                  className="flex w-full items-center px-4 py-3.5 text-left hover:bg-subtle"
                 >
                   <div className="flex-1">
                     <p className="text-sm font-medium">
