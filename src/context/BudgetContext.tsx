@@ -28,6 +28,7 @@ interface BudgetContextValue {
   currency: string
   setCurrency: (currency: string) => void
   resetData: () => void
+  dismissDemoNotice: () => void
 }
 
 const BudgetContext = createContext<BudgetContextValue | null>(null)
@@ -174,6 +175,10 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
     setViewedMonth(currentMonthKey())
   }
 
+  function dismissDemoNotice() {
+    setData((prev) => ({ ...prev, isDemo: false }))
+  }
+
   return (
     <BudgetContext
       value={{
@@ -194,6 +199,7 @@ export function BudgetProvider({ children }: { children: ReactNode }) {
         currency: data.currency,
         setCurrency,
         resetData,
+        dismissDemoNotice,
       }}
     >
       {children}

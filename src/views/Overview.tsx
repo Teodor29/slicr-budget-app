@@ -1,5 +1,5 @@
 import { useBudget } from "../context/BudgetContext"
-import { MdChevronLeft, MdChevronRight } from "react-icons/md"
+import { MdChevronLeft, MdChevronRight, MdClose } from "react-icons/md"
 import { formatAmount } from "../lib/format"
 import { addMonths, monthLabel } from "../lib/date"
 import type { Category, Transaction } from "../types"
@@ -18,6 +18,7 @@ export default function Overview() {
     promptMonth,
     currency,
     resetData,
+    dismissDemoNotice,
   } = useBudget()
 
   const monthKeys = Object.keys(data.months).sort()
@@ -76,12 +77,21 @@ export default function Overview() {
       {data.isDemo && (
         <div className="card flex items-center justify-between gap-3 text-sm text-fg-muted">
           <span>You're viewing demo data</span>
-          <button
-            onClick={resetData}
-            className="font-medium text-primary hover:text-primary-hover"
-          >
-            Start fresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={resetData}
+              className="font-medium text-primary hover:text-primary-hover"
+            >
+              Start fresh
+            </button>
+            <button
+              aria-label="Dismiss demo notice"
+              onClick={dismissDemoNotice}
+              className="p-1 rounded-full text-fg-muted active:bg-subtle"
+            >
+              <MdClose className="size-5" />
+            </button>
+          </div>
         </div>
       )}
       <SummaryCard
